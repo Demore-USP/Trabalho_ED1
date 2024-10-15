@@ -75,4 +75,5 @@ void remover_lista(Lista *l, char *nome, int *erro) {
     free(p);
     *erro = 0;
 }
-void
+ccgvyg
+vgvgh
