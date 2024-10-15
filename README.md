@@ -13,7 +13,7 @@ especificações funcionais e de projeto, assim como boas práticas de programa�
 - #### O trabalho deve ser desenvolvido em grupos de até quatro alunos, no máximo, sendo que:
 - #####   Cada grupo deverá escolher uma das opções descritas na seção 5.
 - #####   Serão aceitos somente trabalhos em linguagem de programação C.
-
+- #####   Data de entrega: 29/outubro (terça-feira), até meia noite.
 <br>
 
 ### 3. Critérios de Avaliação
