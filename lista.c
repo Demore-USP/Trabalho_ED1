@@ -44,6 +44,7 @@ void inserir_lista_ordem_alfabetica(Lista *l, char *nome, int *erro) {
         l->ini = novo;
     } else {
         ant->prox = novo;
+        novo->prox = p;
     }
     if (p == NULL) {
         l->fim = novo;
