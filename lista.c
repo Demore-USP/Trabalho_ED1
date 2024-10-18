@@ -4,7 +4,7 @@ erro == 2 significa produto já existente (função inserir_produto)
 erro == 3 significa produto não encontrado (função remover_produto)
 erro == 4 significa lista vazia (função remover_produto)
 erro == 5 significa lista vazia (função imprimir_lista)
-erro == 6 significa lista vazia (função excluir_lista)
+erro == 6 significa lista não inicializada (função excluir_lista)
 */
 
 // Includes padrão
@@ -25,7 +25,7 @@ typedef struct {
     No *fim;
 } Lista;
 
-// Função que inicia a lista
+// Função que inicializa a lista
 void inicializar_lista(Lista *L) {
     L->ini = NULL;
     L->fim = NULL;
@@ -150,11 +150,11 @@ void imprimir_lista(Lista *L, int *erro) {
     *erro = 0; 
 }
 
-// Função para apagar todos os nós e a lista em si
+// Função para apagar todos os nós da lista
 void excluir_lista(Lista *L, int *erro) {
-    if (lista_vazia(L)) {
-        *erro = 6; // Atualiza o erro 
-        return;    
+    if (L == NULL) {
+        *erro = 6;  
+        return; // Caso a lista não tenha sido inicializada, atualiza o erro e retorna
     }
 
     // Ponteiros auxiliares 
@@ -168,9 +168,5 @@ void excluir_lista(Lista *L, int *erro) {
         free(temp->produto); 
         free(temp); 
     }
-
-    // Após liberar todos os nós, libera a lista
-    free(L);
-    
     *erro = 0;
 }
