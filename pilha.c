@@ -113,5 +113,6 @@ void excluir_pilha(Pilha *P, int *erro) {
         atual = atual->prox;  // Avança para o próximo nó
         free(temp);  
     }
+    P->topo = NULL; // Ajustando o ponteiro
     *erro = 0;
 }

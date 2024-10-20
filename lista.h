@@ -1,8 +1,8 @@
 #ifndef LISTA_H
 #define LISTA_H
 
-typedef struct No No;
-typedef struct Lista Lista;
+typedef struct no No;
+typedef struct Lista;
 
 void inicializar_lista(Lista *);
 int lista_vazia(Lista *); 

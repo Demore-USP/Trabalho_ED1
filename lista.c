@@ -28,7 +28,7 @@ typedef struct {
 // Função que inicializa a lista
 void inicializar_lista(Lista *L) {
     L->ini = NULL;
-    L->fim = NULL;
+    L->fim = NULL; // Ajustando os ponteiros
 }
 
 // Função que verifica se a lista está vazia
@@ -137,7 +137,7 @@ void imprimir_lista(Lista *L, int *erro) {
         return;    
     }
 
-    // Ponteiro auxiliar para não modificar os ponteiros 'ini' e 'fim'
+    // Ponteiro auxiliar para não modificar o ponteiro 'ini' 
     No *aux = L->ini;
 
     // Enquanto houver lista para percorrer, imprime o nome do produto
@@ -168,5 +168,7 @@ void excluir_lista(Lista *L, int *erro) {
         free(temp->produto); 
         free(temp); 
     }
+    L->ini = NULL;
+    L->fim = NULL;
     *erro = 0;
 }
