@@ -34,7 +34,8 @@ void encerrar_leilao()
 void remover_produto()
 */
 
-int main() {
+int main()
+{
     int opcao = 0;
     while (opcao != 6)
     {
@@ -49,34 +50,33 @@ int main() {
         scanf("%d", &opcao);
         if (opcao == 1)
         {
-            //cadastrar_produto();
+            // cadastrar_produto();
         }
         else if (opcao == 2)
         {
-            //listar_produtos();
+            // listar_produtos();
         }
         else if (opcao == 3)
         {
-            //dar_lance();
+            // dar_lance();
         }
         else if (opcao == 4)
         {
-            //listar_outros_produtos();
+            // listar_outros_produtos();
         }
         else if (opcao == 5)
         {
-            //remover_produto();
+            // remover_produto();
         }
         else if (opcao == 6)
         {
-            //encerrar_leilao();
+            // encerrar_leilao();
         }
         else
         {
             printf("Opcao invalida! Digite uma das opcoes disponiveis\n");
         }
-        
     }
 
-return 0;
+    return 0;
 }
