@@ -12,37 +12,30 @@ erro == 5 significa pilha não inicializada (função excluir_pilha)
 #include <stdlib.h>
 #include <string.h>
 
-// Criando a struct que armazena os valores dos lances
-typedef struct no {
-    float valor;
-    struct no *prox;
-} No;
-
-// Ponteiro topo da Pilha (sempre aponta pro lance mais alto)
-typedef struct {
-    No *topo;
-} Pilha;
-
 // Função que inicializa a Pilha
-void inicializar_pilha(Pilha *P) {
+void inicializar_pilha(Pilha *P)
+{
     P->topo = NULL;
 }
 
 // Função que verifica se a pilha está vazia
 // (retorna 1 se está vazia ou 0 se não está)
-int pilha_vazia(Pilha *P) {
+int pilha_vazia(Pilha *P)
+{
     return (P->topo == NULL);
 }
 
 // Função que insere um lance na pilha
-void empilhar(Pilha *P, float valor, int *erro) {
-    No *novo = (No *)malloc(sizeof(No)); // Aloca memória para um novo Nó
-    if (novo == NULL) {
+void empilhar(Pilha *P, float valor, int *erro)
+{
+    No2 *novo = (No2 *)malloc(sizeof(No2)); // Aloca memória para um novo Nó
+    if (novo == NULL)
+    {
         *erro = 1;
-        return; // // Caso a alocação falhe, retorna e o erro é atualizado 
+        return; // // Caso a alocação falhe, retorna e o erro é atualizado
     }
 
-    // O novo lance aponta para o lance anterior (antigo topo), e o topo 
+    // O novo lance aponta para o lance anterior (antigo topo), e o topo
     // passa a apontar para o novo lance
     novo->valor = valor;
     novo->prox = P->topo;
@@ -51,67 +44,77 @@ void empilhar(Pilha *P, float valor, int *erro) {
 }
 
 // Função que remove o último lance da pilha (simplesmente apaga o nó)
-void desempilhar(Pilha *P, int *erro) {
-    if (pilha_vazia(P)) {
+void desempilhar(Pilha *P, int *erro)
+{
+    if (pilha_vazia(P))
+    {
         *erro = 2;
         // Se a pilha estiver vazia é impossível remover algo, então
         // atualiza o erro e retorna
-        return; 
+        return;
     }
 
-    No *temp = P->topo;
+    No2 *temp = P->topo;
     P->topo = P->topo->prox;
     free(temp);
     *erro = 0;
 }
 
-void imprimir_pilha(Pilha *P, int *erro) {
-    if (pilha_vazia(P)) {
-        *erro = 3;  
+void imprimir_pilha(Pilha *P, int *erro)
+{
+    if (pilha_vazia(P))
+    {
+        *erro = 3;
         return; // Se a pilha estiver vazia, atualiza o erro e retorna
     }
-    
+
     // Ponteiro auxiliar para não modificar o ponteiro topo
-    No *atual = P->topo;
-    
+    No2 *atual = P->topo;
+
     // Enquanto houver pilha para percorrer, imprime o lance
     // e avança para o próximo
-    while (atual != NULL) {
-        printf("%f\n", atual->valor);  
-        atual = atual->prox;  
+    while (atual != NULL)
+    {
+        printf("%f\n", atual->valor);
+        atual = atual->prox;
     }
-    
-    *erro = 0;  
+
+    *erro = 0;
 }
 
 // Função que imprime apenas o topo da pilha (apenas o lance mais alto)
-void imprimir_topo(Pilha *P, int *erro) {
-    if (pilha_vazia(P)) {
-        *erro = 4;  
+void imprimir_topo(Pilha *P, int *erro)
+{
+    if (pilha_vazia(P))
+    {
+        *erro = 4;
         return; // Se a pilha estiver vazia, atualiza o erro e retorna
     }
-    
+
     // Imprime apenas o valor do topo da pilha
     printf("%f\n", P->topo->valor);
-    *erro = 0;  
+    *erro = 0;
 }
 
-// Função que apaga todos os nós da pilha 
-void excluir_pilha(Pilha *P, int *erro) {
-    if (P == NULL) {
-        *erro = 5;  
+// Função que apaga todos os nós da pilha
+void excluir_pilha(Pilha *P, int *erro)
+{
+    if (P == NULL)
+    {
+        *erro = 5;
         return; // Caso a pilha não tenha sido inicializada, atualiza o erro e retorna
     }
 
     // Ponteiros auxiliares
-    No *atual = P->topo;
-    No *temp = NULL;
+    No2 *atual = P->topo;
+    No2 *temp = NULL;
 
     // Percorre a pilha e libera cada nó
-    while (atual != NULL) {
-        temp = atual;  // Guarda o nó atual para liberar
-        atual = atual->prox;  // Avança para o próximo nó
-        free(temp);  
+    while (atual != NULL)
+    {
+        temp = atual;        // Guarda o nó atual para liberar
+        atual = atual->prox; // Avança para o próximo nó
+        free(temp);
     }
     P->topo = NULL; // Ajustando o ponteiro
     *erro = 0;

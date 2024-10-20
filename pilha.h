@@ -1,8 +1,18 @@
 #ifndef PILHA_H
 #define PILHA_H
 
-typedef struct no No;
-typedef struct Pilha;
+// Criando a struct que armazena os valores dos lances
+typedef struct no2
+{
+    float valor;
+    struct no2 *prox;
+} No2;
+
+// Ponteiro topo da Pilha (sempre aponta pro lance mais alto)
+typedef struct Pilha
+{
+    No2 *topo;
+} Pilha;
 
 void inicializar_pilha(Pilha *);
 int pilha_vazia(Pilha *);
