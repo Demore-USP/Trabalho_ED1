@@ -13,20 +13,29 @@ erro == 6 significa lista vazia (função excluir_lista)
 #include "pilha.h"
 #include "fila.h"
 
-// funcao cadastrar produto
-void cadastrar_produto(Lista *produtos, int *erro)
+// estrutura leilao para ficar mais organizado o código
+typedef struct leilao
 {
+    Lista *produtos;
+    Pilha *lances;
+    Fila *usuarios_lances;
+} Leilao;
+
+// funcao cadastrar produto
+void cadastrar_produto(Lista **produtos, int *erro)
+{
+    if (*produtos == NULL)                                    // verifica se o ponteiro é nulo
+        *produtos = (Lista *)malloc(sizeof(Lista));           // se for, aloca a memória da lista
+    if ((*produtos)->ini == NULL && (*produtos)->fim == NULL) // caso a lista esteja vazia, inicializa ela
+        inicializar_lista(*produtos);
+
     char nome_produto[50];
-
-    if (produtos->ini == NULL && produtos->fim == NULL) // ta travando aq, por algum motivo n ta avançado pro proximo printf, fé
-        inicializar_lista(produtos);                    // dei uma alterada nos .h e .c mas não consegui resolver
-
     printf("Entre com o nome do produto: ");
     scanf("%s", nome_produto);
 
-    inserir_na_lista(produtos, nome_produto, erro);
+    inserir_na_lista(*produtos, nome_produto, erro); // insere o nome do produto informado pelo usuario na lista
 
-    if (*erro == 1)
+    if (*erro) // caso haja algum erro, retorna
         return;
 
     printf("Produto cadastrado com sucesso!\n");
@@ -39,10 +48,48 @@ void listar_produtos()
 
 //funcao listar lances  ***Tem que ser chamada junto com a funcao listar produtos
 void listar_lances()
+*/
 
-//funcao dar lance
-void dar_lance()
+// funcao dar lance !!!!!!!!!!!!!!!!Função inacabada, falta uma forma de organizar os lances e usuarios por produto, (lista de filas e pilhas?)
+void dar_lance(Leilao *leilao, int *erro)
+{
+    char nome[50], nome_produto[50];
+    float valor;
 
+    printf("Entre com seu nome: ");
+    scanf("%s", nome);
+    printf("Entre com o valor do lance: R$ ");
+    scanf("%f", &valor);
+    printf("Entre com o nome do produto: ");
+    scanf("%s", nome_produto);
+
+    if (!esta_na_lista(leilao->produtos, nome_produto, erro)) //!!!!!!!!!!!!ERRO, caso o produto não esteja na lista, trava o terminal
+    {
+        *erro = 3;
+        return;
+    }
+
+    if (leilao->usuarios_lances == NULL && leilao->lances == NULL)
+    {
+        leilao->usuarios_lances = (Fila *)malloc(sizeof(Fila));
+        leilao->lances = (Pilha *)malloc(sizeof(Pilha));
+        if (leilao->usuarios_lances == NULL || leilao->lances == NULL)
+        {
+            *erro = 1;
+            return;
+        }
+        inicializar_fila(leilao->usuarios_lances);
+        inicializar_pilha(leilao->lances);
+    }
+
+    inserir_na_fila(leilao->usuarios_lances, nome, erro);
+    empilhar(leilao->lances, valor, erro);
+
+    printf("Lance dado com sucesso!\n");
+    return;
+}
+
+/*
 //funcao listar outros produtos
 void listar_outros_produtos()
 
@@ -55,9 +102,11 @@ void remover_produto()
 
 int main()
 {
-    Lista *produtos = NULL;
-    Pilha *lances = NULL;
-    Fila *usuarios_lances = NULL;
+    Leilao leilao;
+    leilao.produtos = NULL;
+    leilao.lances = NULL;
+    leilao.usuarios_lances = NULL;
+    int erro = 0;
     int opcao = 0;
     while (opcao != 6)
     {
@@ -72,12 +121,15 @@ int main()
         scanf("%d", &opcao);
         if (opcao == 1)
         {
-            int erro = 0;
-            cadastrar_produto(produtos, &erro);
-            if (erro == 1)
+            cadastrar_produto(&leilao.produtos, &erro);
+            switch (erro)
             {
-                printf("Erro de alocação de memória\n");
-                exit(1);
+            case 1:
+                printf("Errro de alocação de memória\n");
+                break;
+            case 2:
+                printf("Produto já existente\n");
+                break;
             }
         }
         else if (opcao == 2)
@@ -86,7 +138,16 @@ int main()
         }
         else if (opcao == 3)
         {
-            // dar_lance();
+            dar_lance(&leilao, &erro);
+            switch (erro)
+            {
+            case 1:
+                printf("Errro de alocação de memória\n");
+                break;
+            case 3:
+                printf("Produto não encontrado\n");
+                break;
+            }
         }
         else if (opcao == 4)
         {

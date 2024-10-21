@@ -136,6 +136,25 @@ void remover_da_lista(Lista *L, char *nome_produto, int *erro)
     *erro = 0;          // Atualiza o erro
 }
 
+// Função que verifica se um produto esta na lista
+int esta_na_lista(Lista *L, char *nome_produto, int *erro)
+{
+    if (L == NULL || L->ini == NULL) // Verifica se a lista esta inicializada
+    {
+        *erro = 3; // Indica que a lista não foi inicializada
+        return 0;  // Produto não encontrado
+    }
+    No1 *aux = L->ini;
+    while (aux != NULL) // Percorre a lista comparando os nomes dos produtos com o nome do produto informado
+    {
+        if (strcmp(aux->produto, nome_produto) == 0)
+            return 1; // Produto encontrado
+        aux = aux->prox;
+    }
+    *erro = 3; // Produto não encontrado
+    return 0;
+}
+
 // Função que imprime todos os elementos da lista
 void imprimir_lista(Lista *L, int *erro)
 {
