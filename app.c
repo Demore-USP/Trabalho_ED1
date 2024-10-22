@@ -95,10 +95,32 @@ void listar_outros_produtos()
 
 //funcao encerrar leilao
 void encerrar_leilao()
+*/
+
+
+
 
 //funcao remover produto
-void remover_produto()
-*/
+void remover_produto(Leilao *leilao, int *erro){
+    
+    char nome_produto[50];
+    printf("Nome do produto a remover: ");
+    scanf("%s", nome_produto);
+
+    if (!esta_na_lista(leilao->produtos, nome_produto, erro)) //!!!!!!!!!!!!ERRO, caso o produto não esteja na lista, trava o terminal
+    {
+        *erro = 3;
+        return;
+    }
+    remover_da_lista(leilao->produtos, nome_produto, erro);
+
+    if (*erro) // caso haja algum erro, retorna
+        return;
+
+    printf("Produto removido com sucesso!\n");
+    return;
+}
+
 
 int main()
 {
@@ -155,7 +177,17 @@ int main()
         }
         else if (opcao == 5)
         {
-            // remover_produto();
+            
+            remover_produto(&leilao, &erro);
+            switch (erro)
+            {
+            case 1:
+                printf("Errro de alocação de memória\n");
+                break;
+            case 3:
+                printf("Produto não encontrado\n");
+                break;
+            }
         }
         else if (opcao == 6)
         {
