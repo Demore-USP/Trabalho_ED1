@@ -2,17 +2,15 @@
 #define FILA_H
 
 // Criando a struct que armazena o nome do usuário
-typedef struct no3
-{
+typedef struct no_fila {
     char *usuario;
-    struct no3 *prox;
-} No3;
+    struct no_fila *prox;
+} No_Fila;
 
 // Ponteiros de início e fim da fila de usuários
-typedef struct Fila
-{
-    No3 *ini;
-    No3 *fim;
+typedef struct Fila {
+    No_Fila *ini;
+    No_Fila *fim;
 } Fila;
 
 void inicializar_fila(Fila *);
