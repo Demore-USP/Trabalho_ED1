@@ -4,29 +4,29 @@
 #include "pilha.h"
 #include "fila.h"
 
-// Criando a struct que armazena os produtos (por nome)
-typedef struct no1
-{
+// Criando a struct que armazena os produtos 
+// junto com os usuários e seus respectivos lances
+typedef struct no_lista {
     char *produto;
-    Fila *usuarios_lances;
-    Pilha *lances;
-    struct no1 *prox;
-} No1;
+    Fila usuarios;
+    Pilha lances;
+    struct no_lista *prox;
+} No_Lista;
 
 // Ponteiros de início e fim da lista de produtos
-typedef struct Lista
-{
-    No1 *ini;
-    No1 *fim;
+typedef struct Lista {
+    No_Lista *ini;
+    No_Lista *fim;
 } Lista;
 
 void inicializar_lista(Lista *);
 int lista_vazia(Lista *);
-void inserir_na_lista(Lista *, char *, int *);
-void remover_da_lista(Lista *, char *, int *);
+void inserir_produto_lista(Lista *, char *, int *);
+No_Lista *procurar_produto(Lista *, char *, int *);
 int esta_na_lista(Lista *, char *, int *);
-No1 *acha_produto(Lista *, char *, int *);
-void imprimir_lista(Lista *, int *);
+void remover_da_lista(Lista *, char *, int *);
+void imprimir_produtos(Lista *, int *);
 void excluir_lista(Lista *, int *);
+void inserir_lance(Lista *, char *, float, char *, int *);
 
 #endif

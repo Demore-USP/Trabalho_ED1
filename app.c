@@ -1,34 +1,18 @@
-/*
-erro == 1 significa erro de alocação de memória (função inserir_lista)
-erro == 2 significa produto já existente (função inserir_produto)
-erro == 3 significa produto não encontrado (função remover_produto)
-erro == 4 significa lista vazia (função remover_produto)
-erro == 5 significa lista vazia (função imprimir_lista)
-erro == 6 significa lista vazia (função excluir_lista)
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "lista.h"
-#include "pilha.h"
-#include "fila.h"
 
-// funcao cadastrar produto
-void cadastrar_produto(Lista **produtos, int *erro)
-{
-    if (*produtos == NULL)                                    // verifica se o ponteiro é nulo
-        *produtos = (Lista *)malloc(sizeof(Lista));           // se for, aloca a memória da lista
-    if ((*produtos)->ini == NULL && (*produtos)->fim == NULL) // caso a lista esteja vazia, inicializa ela
-        inicializar_lista(*produtos);
-
+// Função que cadastra um produto na lista
+void cadastrar_produto(Lista *lista_de_produtos, int *erro) {
     char nome_produto[50];
     printf("Entre com o nome do produto: ");
     scanf("%s", nome_produto);
 
-    inserir_na_lista(*produtos, nome_produto, erro); // ERRO!!!!!!!!!!!!!!!!!!! esta matando o terminal assim que cai aqui
+    inserir_produto_lista(lista_de_produtos, nome_produto, erro); 
 
-    if (*erro) // caso haja algum erro, retorna
-        return;
+    if (*erro) 
+        return; // caso haja algum erro, retorna
 
     printf("Produto cadastrado com sucesso!\n");
     return;
@@ -43,43 +27,20 @@ void listar_lances()
 */
 
 // funcao dar lance !!!!!!!!!!!!!!!!Função não testada
-void dar_lance(Lista *produtos, int *erro)
-{
-    char nome[50], nome_produto[50];
+void dar_lance(Lista *lista_de_produtos, int *erro) {
+    char nome_usuario[50], nome_produto[50];
     float valor;
 
     printf("Entre com seu nome: ");
-    scanf("%s", nome);
-    printf("Entre com o valor do lance: R$ ");
+    scanf("%s", nome_usuario);
+    printf("\nEntre com o valor do lance: R$ ");
     scanf("%f", &valor);
-    printf("Entre com o nome do produto: ");
+    printf("\nEntre com o nome do produto: ");
     scanf("%s", nome_produto);
 
-    if (!esta_na_lista(produtos, nome_produto, erro))
-    {
-        *erro = 3;
-        return;
-    }
+    inserir_lance(lista_de_produtos, nome_produto, valor, nome_usuario, erro);
 
-    No1 *no_produto = acha_produto(produtos, nome_produto, erro);
-
-    if (no_produto->usuarios_lances == NULL && no_produto->lances == NULL)
-    {
-        no_produto->usuarios_lances = (Fila *)malloc(sizeof(Fila));
-        no_produto->lances = (Pilha *)malloc(sizeof(Pilha));
-        if (no_produto->usuarios_lances == NULL || no_produto->lances == NULL)
-        {
-            *erro = 1;
-            return;
-        }
-        inicializar_fila(no_produto->usuarios_lances);
-        inicializar_pilha(no_produto->lances);
-    }
-
-    inserir_na_fila(no_produto->usuarios_lances, nome, erro);
-    empilhar(no_produto->lances, valor, erro);
-
-    printf("Lance dado com sucesso!\n");
+    printf("\nLance dado com sucesso!");
     return;
 }
 
@@ -89,22 +50,16 @@ void listar_outros_produtos()
 */
 
 // funcao remover produto
-void remover_produto(Lista *produtos, int *erro)
-{
+void remover_produto(Lista *lista_de_produtos, int *erro) {
 
+    // Recebendo o nome do produto
     char nome_produto[50];
     printf("Nome do produto a remover: ");
     scanf("%s", nome_produto);
 
-    if (!esta_na_lista(produtos, nome_produto, erro))
-    {
-        *erro = 3;
-        return;
-    }
-    remover_da_lista(produtos, nome_produto, erro);
-
-    if (*erro) // caso haja algum erro, retorna
-        return;
+    remover_da_lista(lista_de_produtos, nome_produto, erro);
+    if (*erro) 
+        return; // Caso haja algum erro, retorna
 
     printf("Produto removido com sucesso!\n");
     return;
@@ -116,11 +71,14 @@ void encerrar_leilao(Lista *produtos, int *erro)
     excluir_lista(produtos, erro);
 }
 
-int main()
-{
-    Lista *produtos;
+int main() {
+
+    Lista lista_de_produtos;
     int erro = 0;
     int opcao = 0;
+
+    inicializar_lista(&lista_de_produtos);
+
     while (opcao != 6)
     {
         printf("Caro usuário, suas opcoes sao:\n");
@@ -134,11 +92,10 @@ int main()
         scanf("%d", &opcao);
         if (opcao == 1)
         {
-            cadastrar_produto(&produtos, &erro);
-            switch (erro)
-            {
+            cadastrar_produto(&lista_de_produtos, &erro);
+            switch (erro) {
             case 1:
-                printf("Errro de alocação de memória\n");
+                printf("Erro de alocação de memória\n");
                 break;
             case 2:
                 printf("Produto já existente\n");
@@ -151,7 +108,7 @@ int main()
         }
         else if (opcao == 3)
         {
-            dar_lance(produtos, &erro);
+            dar_lance(&lista_de_produtos, &erro);
             switch (erro)
             {
             case 1:
@@ -169,7 +126,7 @@ int main()
         else if (opcao == 5)
         {
 
-            remover_produto(produtos, &erro);
+            remover_produto(&lista_de_produtos, &erro);
             switch (erro)
             {
             case 1:
@@ -182,7 +139,7 @@ int main()
         }
         else if (opcao == 6)
         {
-            encerrar_leilao(produtos, &erro);
+            encerrar_leilao(&lista_de_produtos, &erro);
         }
         else
         {
