@@ -13,14 +13,6 @@ erro == 6 significa lista vazia (função excluir_lista)
 #include "pilha.h"
 #include "fila.h"
 
-// estrutura leilao para ficar mais organizado o código
-typedef struct leilao
-{
-    Lista *produtos;
-    Pilha *lances;
-    Fila *usuarios_lances;
-} Leilao;
-
 // funcao cadastrar produto
 void cadastrar_produto(Lista **produtos, int *erro)
 {
@@ -33,7 +25,7 @@ void cadastrar_produto(Lista **produtos, int *erro)
     printf("Entre com o nome do produto: ");
     scanf("%s", nome_produto);
 
-    inserir_na_lista(*produtos, nome_produto, erro); // insere o nome do produto informado pelo usuario na lista
+    inserir_na_lista(*produtos, nome_produto, erro); // ERRO!!!!!!!!!!!!!!!!!!! esta matando o terminal assim que cai aqui
 
     if (*erro) // caso haja algum erro, retorna
         return;
@@ -50,8 +42,8 @@ void listar_produtos()
 void listar_lances()
 */
 
-// funcao dar lance !!!!!!!!!!!!!!!!Função inacabada, falta uma forma de organizar os lances e usuarios por produto, (lista de filas e pilhas?)
-void dar_lance(Leilao *leilao, int *erro)
+// funcao dar lance !!!!!!!!!!!!!!!!Função não testada
+void dar_lance(Lista *produtos, int *erro)
 {
     char nome[50], nome_produto[50];
     float valor;
@@ -63,27 +55,29 @@ void dar_lance(Leilao *leilao, int *erro)
     printf("Entre com o nome do produto: ");
     scanf("%s", nome_produto);
 
-    if (!esta_na_lista(leilao->produtos, nome_produto, erro)) //!!!!!!!!!!!!ERRO, caso o produto não esteja na lista, trava o terminal
+    if (!esta_na_lista(produtos, nome_produto, erro))
     {
         *erro = 3;
         return;
     }
 
-    if (leilao->usuarios_lances == NULL && leilao->lances == NULL)
+    No1 *no_produto = acha_produto(produtos, nome_produto, erro);
+
+    if (no_produto->usuarios_lances == NULL && no_produto->lances == NULL)
     {
-        leilao->usuarios_lances = (Fila *)malloc(sizeof(Fila));
-        leilao->lances = (Pilha *)malloc(sizeof(Pilha));
-        if (leilao->usuarios_lances == NULL || leilao->lances == NULL)
+        no_produto->usuarios_lances = (Fila *)malloc(sizeof(Fila));
+        no_produto->lances = (Pilha *)malloc(sizeof(Pilha));
+        if (no_produto->usuarios_lances == NULL || no_produto->lances == NULL)
         {
             *erro = 1;
             return;
         }
-        inicializar_fila(leilao->usuarios_lances);
-        inicializar_pilha(leilao->lances);
+        inicializar_fila(no_produto->usuarios_lances);
+        inicializar_pilha(no_produto->lances);
     }
 
-    inserir_na_fila(leilao->usuarios_lances, nome, erro);
-    empilhar(leilao->lances, valor, erro);
+    inserir_na_fila(no_produto->usuarios_lances, nome, erro);
+    empilhar(no_produto->lances, valor, erro);
 
     printf("Lance dado com sucesso!\n");
     return;
@@ -92,27 +86,22 @@ void dar_lance(Leilao *leilao, int *erro)
 /*
 //funcao listar outros produtos
 void listar_outros_produtos()
-
-//funcao encerrar leilao
-void encerrar_leilao()
 */
 
+// funcao remover produto
+void remover_produto(Lista *produtos, int *erro)
+{
 
-
-
-//funcao remover produto
-void remover_produto(Leilao *leilao, int *erro){
-    
     char nome_produto[50];
     printf("Nome do produto a remover: ");
     scanf("%s", nome_produto);
 
-    if (!esta_na_lista(leilao->produtos, nome_produto, erro)) //!!!!!!!!!!!!ERRO, caso o produto não esteja na lista, trava o terminal
+    if (!esta_na_lista(produtos, nome_produto, erro))
     {
         *erro = 3;
         return;
     }
-    remover_da_lista(leilao->produtos, nome_produto, erro);
+    remover_da_lista(produtos, nome_produto, erro);
 
     if (*erro) // caso haja algum erro, retorna
         return;
@@ -121,13 +110,15 @@ void remover_produto(Leilao *leilao, int *erro){
     return;
 }
 
+// funcao encerrar leilao
+void encerrar_leilao(Lista *produtos, int *erro)
+{
+    excluir_lista(produtos, erro);
+}
 
 int main()
 {
-    Leilao leilao;
-    leilao.produtos = NULL;
-    leilao.lances = NULL;
-    leilao.usuarios_lances = NULL;
+    Lista *produtos;
     int erro = 0;
     int opcao = 0;
     while (opcao != 6)
@@ -143,7 +134,7 @@ int main()
         scanf("%d", &opcao);
         if (opcao == 1)
         {
-            cadastrar_produto(&leilao.produtos, &erro);
+            cadastrar_produto(&produtos, &erro);
             switch (erro)
             {
             case 1:
@@ -160,7 +151,7 @@ int main()
         }
         else if (opcao == 3)
         {
-            dar_lance(&leilao, &erro);
+            dar_lance(produtos, &erro);
             switch (erro)
             {
             case 1:
@@ -177,8 +168,8 @@ int main()
         }
         else if (opcao == 5)
         {
-            
-            remover_produto(&leilao, &erro);
+
+            remover_produto(produtos, &erro);
             switch (erro)
             {
             case 1:
@@ -191,7 +182,7 @@ int main()
         }
         else if (opcao == 6)
         {
-            // encerrar_leilao();
+            encerrar_leilao(produtos, &erro);
         }
         else
         {

@@ -9,6 +9,8 @@ erro == 6 significa lista não inicializada (função excluir_lista)
 
 // Includes padrão
 #include "lista.h"
+#include "fila.h"
+#include "pilha.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,12 +43,37 @@ void inserir_na_lista(Lista *L, char *nome_produto, int *erro)
     novo->produto = (char *)malloc((strlen(nome_produto) + 1) * sizeof(char));
     if (novo->produto == NULL)
     {
+        free(novo->produto);
         free(novo);
         *erro = 1;
         return; // Caso a alocação falhe, libera o nó, retorna e o erro é atualizado
     }
     // Copia o nome do produto da variável temporária para a definitiva (campo da lista)
     strcpy(novo->produto, nome_produto);
+
+    novo->usuarios_lances = (Fila *)malloc(sizeof(Fila));
+    if (novo->usuarios_lances == NULL)
+    {
+        free(novo->usuarios_lances);
+        free(novo->produto);
+        free(novo);
+        *erro = 1;
+        return; // Caso a alocação falhe, libera o nó, retorna e o erro é atualizado
+    }
+    inicializar_fila(novo->usuarios_lances); // Inicializa a fila de lances
+
+    novo->lances = (Pilha *)malloc(sizeof(Pilha));
+    if (novo->usuarios_lances == NULL)
+    {
+        free(novo->usuarios_lances);
+        free(novo->lances);
+        free(novo->produto);
+        free(novo);
+        *erro = 1;
+        return; // Caso a alocação falhe, libera o nó, retorna e o erro é atualizado
+    }
+    inicializar_pilha(novo->lances); // Inicializa a pilha de lances
+
     novo->prox = NULL; // Atualiza o campo 'prox' do novo nó para nulo, até encontrar a posição correta
 
     // Cria dois ponteiros auxiliares, para achar qual posição
@@ -68,6 +95,8 @@ void inserir_na_lista(Lista *L, char *nome_produto, int *erro)
     {
         *erro = 2;
         free(novo->produto);
+        free(novo->usuarios_lances);
+        free(novo->lances);
         free(novo);
         return;
     }
@@ -131,6 +160,20 @@ void remover_da_lista(Lista *L, char *nome_produto, int *erro)
     { // Verifica se o produto a ser removido é o último elemento da lista
         L->fim = ant;
     }
+    if (aux->usuarios_lances != NULL)
+    {
+        excluir_fila(aux->usuarios_lances, erro);
+        if (*erro)
+            return; // Se houver erro ao excluir a fila, retorna
+    }
+
+    // Verifica e exclui a pilha de lances (se existir)
+    if (aux->lances != NULL)
+    {
+        excluir_pilha(aux->lances, erro);
+        if (*erro)
+            return; // Se houver erro ao excluir a pilha, retorna
+    }
     free(aux->produto); // Libera a memória alocada para o nome
     free(aux);          // Libera o nó
     *erro = 0;          // Atualiza o erro
@@ -153,6 +196,24 @@ int esta_na_lista(Lista *L, char *nome_produto, int *erro)
     }
     *erro = 3; // Produto não encontrado
     return 0;
+}
+
+No1 *acha_produto(Lista *L, char *nome_produto, int *erro)
+{
+    if (L == NULL || L->ini == NULL) // Verifica se a lista esta inicializada
+    {
+        *erro = 3;   // Indica que a lista não foi inicializada
+        return NULL; // Produto não encontrado
+    }
+    No1 *aux = L->ini;
+    while (aux != NULL) // Percorre a lista comparando os nomes dos produtos com o nome do produto informado
+    {
+        if (strcmp(aux->produto, nome_produto) == 0)
+            return aux; // Produto encontrado
+        aux = aux->prox;
+    }
+    *erro = 3;
+    return NULL;
 }
 
 // Função que imprime todos os elementos da lista
@@ -197,6 +258,21 @@ void excluir_lista(Lista *L, int *erro)
     {
         temp = aux;      // Guarda o nó atual para liberar
         aux = aux->prox; // Avança para o próximo nó
+                         // Verifica e exclui a fila de usuários de lances (se existir)
+        if (temp->usuarios_lances != NULL)
+        {
+            excluir_fila(temp->usuarios_lances, erro);
+            if (*erro)
+                return; // Se houver erro ao excluir a fila, retorna
+        }
+
+        // Verifica e exclui a pilha de lances (se existir)
+        if (temp->lances != NULL)
+        {
+            excluir_pilha(temp->lances, erro);
+            if (*erro)
+                return; // Se houver erro ao excluir a pilha, retorna
+        }
         free(temp->produto);
         free(temp);
     }
