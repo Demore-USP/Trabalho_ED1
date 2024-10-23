@@ -42,16 +42,17 @@ void empilhar(Pilha *P, float valor, int *erro) {
 
 
 // Função que remove o último lance da pilha (simplesmente apaga o nó)
-void desempilhar(Pilha *P, int *erro) {
+float desempilhar(Pilha *P, int *erro) {
     if (pilha_vazia(P)) {
         *erro = 1;
         return; // Caso a pilha esteja vazia, retorna e o erro é atualizado
     }
-
+    float valor = P->topo->valor;
     No_Pilha *temp = P->topo;
     P->topo = P->topo->prox;
     free(temp);
     *erro = 0;
+    return valor;
 }
 
 
