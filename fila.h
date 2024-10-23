@@ -1,7 +1,8 @@
 #ifndef FILA_H
 #define FILA_H
 
-// Criando a struct que armazena o nome do usuário
+// Struct que armazena o nome do usuário
+// (Armazena os nomes para cada produto)
 typedef struct no_fila {
     char *usuario;
     struct no_fila *prox;

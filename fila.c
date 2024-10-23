@@ -57,8 +57,13 @@ void inserir_na_fila(Fila *F, char *nome_usuario, int *erro) {
 }
 
 
+<<<<<<< Updated upstream
 // Função que remove o pirmeiro usuário da fila e devolve seu nome
 char *remover_da_fila(Fila *F, int *erro) {
+=======
+// Função que remove o primeiro usuário da fila (simplesmente apaga o nó)
+void remover_da_fila(Fila *F, int *erro) {
+>>>>>>> Stashed changes
     if (fila_vazia(F)) {
         *erro = 1;
         return; // Se a fila estiver vazia, retorna e o erro é atualizado

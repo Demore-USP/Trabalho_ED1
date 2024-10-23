@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lista.h"
+#include "fila.h"
+#include "pilha.h"
 
 // Função que cadastra um produto na lista
 void cadastrar_produto(Lista *lista_de_produtos, int *erro) {
@@ -68,8 +70,7 @@ void remover_produto(Lista *lista_de_produtos, int *erro) {
 }
 
 // funcao encerrar leilao
-void encerrar_leilao(Lista *produtos, int *erro)
-{
+void encerrar_leilao(Lista *produtos, int *erro) {
     excluir_lista(produtos, erro);
 }
 
