@@ -57,13 +57,14 @@ void inserir_na_fila(Fila *F, char *nome_usuario, int *erro) {
 }
 
 
-// Função que remove o pirmeiro usuário da fila (simplesmente apaga o nó)
-void remover_da_fila(Fila *F, int *erro) {
+// Função que remove o pirmeiro usuário da fila e devolve seu nome
+char *remover_da_fila(Fila *F, int *erro) {
     if (fila_vazia(F)) {
         *erro = 1;
         return; // Se a fila estiver vazia, retorna e o erro é atualizado
     }
-
+    char nome_aux[50];
+    nome_aux = F->ini->nome_usuario;
     // Ponteiro auxiliar para remover 
     No_Fila *aux = F->ini;
     F->ini = aux->prox;
@@ -74,6 +75,7 @@ void remover_da_fila(Fila *F, int *erro) {
     free(aux->usuario); // Libera o nome do usuário
     free(aux); // Libera o nó
     *erro = 0;
+    return(nome_aux);
 }
 
 
@@ -95,7 +97,6 @@ void imprimir_fila(Fila *F, int *erro) {
     }
     *erro = 0;
 }
-
 
 void imprimir_primeiro_fila(Fila *F, int *erro) {
     if (fila_vazia(F)) {

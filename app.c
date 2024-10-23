@@ -18,13 +18,15 @@ void cadastrar_produto(Lista *lista_de_produtos, int *erro) {
     return;
 }
 
-/*
-//funcao listar produtos  ***Tem que ser chamada junto com a funcao listar lances
-void listar_produtos()
+//funcao_listar_produtos_lances  ***Tem que ser chamada junto com a funcao listar lances
+void listar_produtos_lances(Lista *lista_de_produtos, int *erro) {
 
-//funcao listar lances  ***Tem que ser chamada junto com a funcao listar produtos
-void listar_lances()
-*/
+    if(*erro)
+        return;
+
+    printf("Listagem completa!");
+    return;
+}
 
 // funcao dar lance !!!!!!!!!!!!!!!!Função não testada
 void dar_lance(Lista *lista_de_produtos, int *erro) {
@@ -40,7 +42,7 @@ void dar_lance(Lista *lista_de_produtos, int *erro) {
 
     inserir_lance(lista_de_produtos, nome_produto, valor, nome_usuario, erro);
 
-    printf("\nLance dado com sucesso!");
+    printf("\nLance dado com sucesso!\n");
     return;
 }
 
@@ -74,6 +76,7 @@ void encerrar_leilao(Lista *produtos, int *erro)
 int main() {
 
     Lista lista_de_produtos;
+    Fila usuarios_geral;
     int erro = 0;
     int opcao = 0;
 

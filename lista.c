@@ -181,7 +181,43 @@ void remover_da_lista(Lista *L, char *nome_produto, int *erro) {
     *erro = 0;         
 }
 
-
+void imprimir_lista_fila_pilha(Lista *L, int *erro) { //FUNÇÃO INACABADA 
+    No_Lista aux = L->ini;
+    char nome_temp[50];
+    int contador;
+    while(aux != NULL) {
+        printf("%s\n", aux.produto);
+        No_Lista temp = aux;
+        contador = 1;
+        pilha pilha_temp = aux->lances;
+        fila fila_temp = aux->usuarios;
+        float valor1 = desempilhar(pilha_temp, erro);
+        float valor2 = desempilhar(pilha_temp, erro);
+        if(valor1 == valor2) {
+            while(valor1 == valor2) {
+                valor_1 = desempilhar(pilha_temp, erro);
+                contador++;
+            }
+        }
+        if(contador > 1) {
+            printf("%d lances de R$%.2f: ", contador, pilha_temp.topo->valor);
+            for(int i = 0; i < contador; i++) {
+                nome_temp = remover_da_fila(fila_temp, erro);
+                if(i < contador-1)
+                    printf("%s, ", nome_temp);
+                else   
+                    printf("%s\n", nome_temp);
+            }
+        }
+        else {
+            while(!fila_vazia(fila_temp)) {
+                nome_temp = remover_da_fila(fila_temp, erro);
+                printf("1 lance de R$%.2f: %s", valor1, nome_temp);
+            }
+        }
+        aux = aux->prox;
+    }
+}
 
 // Função que imprime todos os produtos da lista
 void imprimir_produtos(Lista *L, int *erro) {
