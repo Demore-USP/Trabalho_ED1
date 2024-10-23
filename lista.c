@@ -182,27 +182,27 @@ void remover_da_lista(Lista *L, char *nome_produto, int *erro) {
 }
 
 void imprimir_lista_fila_pilha(Lista *L, int *erro) { //FUNÇÃO INACABADA 
-    No_Lista aux = L->ini;
-    char nome_temp[50];
+    No_Lista *aux = L->ini;
+    char *nome_temp;
     int contador;
     while(aux != NULL) {
-        printf("%s\n", aux.produto);
-        No_Lista temp = aux;
+        printf("%s\n", aux->produto);
+        No_Lista *temp = aux;
         contador = 1;
-        pilha pilha_temp = aux->lances;
-        fila fila_temp = aux->usuarios;
-        float valor1 = desempilhar(pilha_temp, erro);
-        float valor2 = desempilhar(pilha_temp, erro);
+        Pilha pilha_temp = aux->lances;
+        Fila fila_temp = aux->usuarios;
+        float valor1 = desempilhar(&pilha_temp, erro);
+        float valor2 = desempilhar(&pilha_temp, erro);
         if(valor1 == valor2) {
             while(valor1 == valor2) {
-                valor_1 = desempilhar(pilha_temp, erro);
+                valor1 = desempilhar(&pilha_temp, erro);
                 contador++;
             }
         }
         if(contador > 1) {
             printf("%d lances de R$%.2f: ", contador, pilha_temp.topo->valor);
             for(int i = 0; i < contador; i++) {
-                nome_temp = remover_da_fila(fila_temp, erro);
+                nome_temp = remover_da_fila(&fila_temp, erro);
                 if(i < contador-1)
                     printf("%s, ", nome_temp);
                 else   
@@ -210,8 +210,8 @@ void imprimir_lista_fila_pilha(Lista *L, int *erro) { //FUNÇÃO INACABADA
             }
         }
         else {
-            while(!fila_vazia(fila_temp)) {
-                nome_temp = remover_da_fila(fila_temp, erro);
+            while(!fila_vazia(&fila_temp)) {
+                nome_temp = remover_da_fila(&fila_temp, erro);
                 printf("1 lance de R$%.2f: %s", valor1, nome_temp);
             }
         }

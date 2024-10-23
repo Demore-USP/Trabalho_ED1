@@ -57,31 +57,41 @@ void inserir_na_fila(Fila *F, char *nome_usuario, int *erro) {
 }
 
 
-<<<<<<< Updated upstream
 // Função que remove o pirmeiro usuário da fila e devolve seu nome
 char *remover_da_fila(Fila *F, int *erro) {
-=======
-// Função que remove o primeiro usuário da fila (simplesmente apaga o nó)
-void remover_da_fila(Fila *F, int *erro) {
->>>>>>> Stashed changes
+    // Verifica se a fila está vazia
     if (fila_vazia(F)) {
         *erro = 1;
-        return; // Se a fila estiver vazia, retorna e o erro é atualizado
+        return NULL; // Se a fila estiver vazia, retorna NULL e atualiza o erro
     }
-    char nome_aux[50];
-    nome_aux = F->ini->nome_usuario;
-    // Ponteiro auxiliar para remover 
+
+    // Aloca espaço para armazenar o nome do usuário removido
+    char *nome_aux = (char *)malloc(strlen(F->ini->usuario) + 1);
+    if (nome_aux == NULL) {
+        *erro = 2; // Erro de alocação de memória
+        return NULL;
+    }
+
+    // Copia o nome do usuário da fila para a variável auxiliar
+    strcpy(nome_aux, F->ini->usuario);
+
+    // Ponteiro auxiliar para remover o nó
     No_Fila *aux = F->ini;
     F->ini = aux->prox;
 
+    // Se a fila ficou vazia após a remoção, atualiza o ponteiro 'fim'
     if (F->ini == NULL) {
-        F->fim = NULL; // Se após a remoção a fila ficar vazia, atualiza o ponteiro fim
+        F->fim = NULL;
     }
-    free(aux->usuario); // Libera o nome do usuário
+
+    // Libera a memória alocada para o nome e o nó
+    free(aux->usuario); // Libera o nome do usuário no nó removido
     free(aux); // Libera o nó
-    *erro = 0;
-    return(nome_aux);
+
+    *erro = 0; // Nenhum erro
+    return nome_aux; // Retorna o nome do usuário removido
 }
+
 
 
 // Função que imprime todos os elementos da fila
