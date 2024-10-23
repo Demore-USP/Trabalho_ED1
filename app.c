@@ -77,6 +77,11 @@ void encerrar_leilao(Lista *produtos, int *erro) {
     {
         printf("%s", buscar_produto_especifico(produtos, i, erro));
         printf(": ");
+        if(buscar_usuario_ganhador(produtos, i, erro) == NULL){
+            printf("Nenhum lance foi dado para esse produto\n");
+            i++;
+            continue;
+        }
         printf("%s ", buscar_usuario_ganhador(produtos, i, erro));
         printf("comprou por R$");
         printf("%.2f\n", buscar_maior_lance(produtos, i, erro));
