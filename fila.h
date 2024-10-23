@@ -20,6 +20,7 @@ void inserir_na_fila(Fila *, char *, int *);
 char *remover_da_fila(Fila *, int *);
 void imprimir_fila(Fila *, int *);
 void imprimir_primeiro_fila(Fila *, int *);
+Fila inverter_fila(Fila *F, int *erro);
 void excluir_fila(Fila *, int *);
 
 #endif

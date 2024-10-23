@@ -122,6 +122,39 @@ void imprimir_primeiro_fila(Fila *F, int *erro) {
     *erro = 0;
 }
 
+Fila inverter_fila(Fila *F, int *erro) {
+    Fila fila_invertida;
+    inicializar_fila(&fila_invertida);  // Inicializamos a nova fila invertida
+
+    if (fila_vazia(F)) {
+        return fila_invertida;  // Se a fila original estiver vazia, retornamos uma fila vazia
+    }
+
+    No_Fila *atual = F->ini;
+
+    // Percorremos a fila original do início ao fim
+    while (atual != NULL) {
+        // Criamos um novo nó com o mesmo conteúdo do nó atual da fila original
+        No_Fila *novo_no = (No_Fila *) malloc(sizeof(No_Fila));
+        if (novo_no == NULL) {
+            printf("Erro de alocação de memória.\n");
+            exit(1);  // Se falhar a alocação, terminamos o programa
+        }
+
+        // Copia os dados do nó atual da fila original para o novo nó
+        strcpy(novo_no->usuario, atual->usuario);
+        novo_no->prox = fila_invertida.ini;  // Inserimos o novo nó no início da fila invertida
+        fila_invertida.ini = novo_no;
+
+        // Avançamos para o próximo nó da fila original
+        atual = atual->prox;
+    }
+
+    // Após o loop, ajustamos o ponteiro para o fim da fila invertida
+    fila_invertida.fim = F->ini;  // O fim da fila invertida será o primeiro nó da fila original
+
+    return fila_invertida;  // Retornamos a fila invertida
+}
 
 // Função para apagar todos os nós da fila
 void excluir_fila(Fila *F, int *erro) {
