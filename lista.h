@@ -4,9 +4,10 @@
 #include "pilha.h"
 #include "fila.h"
 
-// Criando a struct que armazena os produtos 
+// Criando a struct que armazena os produtos
 // junto com os usuários e seus respectivos lances
-typedef struct no_lista {
+typedef struct no_lista
+{
     char *produto;
     Fila usuarios;
     Pilha lances;
@@ -14,7 +15,8 @@ typedef struct no_lista {
 } No_Lista;
 
 // Ponteiros de início e fim da lista de produtos
-typedef struct Lista {
+typedef struct Lista
+{
     No_Lista *ini;
     No_Lista *fim;
 } Lista;

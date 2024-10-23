@@ -1,8 +1,8 @@
 /*
-Caso haja erro com alguma função da lista, retorna 1. 
+Caso haja erro com alguma função da lista, retorna 1.
 Caso haja erro com alguma função da fila, retorna 2.
 Caso haja erro com alguma função da pilha, retorna 3.
-Desse modo, cabe ao usuário do TAD verificar o motivo do erro, 
+Desse modo, cabe ao usuário do TAD verificar o motivo do erro,
 de acordo a função chamada.
 */
 
@@ -14,33 +14,35 @@ de acordo a função chamada.
 #include <stdlib.h>
 #include <string.h>
 
-
 // Função que inicializa a lista
-void inicializar_lista(Lista *L) {
+void inicializar_lista(Lista *L)
+{
     L->ini = NULL;
-    L->fim = NULL; 
+    L->fim = NULL;
 }
-
 
 // Função que verifica se a lista está vazia
 // (retorna 1 se está vazia ou 0 se não está)
-int lista_vazia(Lista *L) {
+int lista_vazia(Lista *L)
+{
     return (L->ini == NULL);
 }
 
-
 // Função que insere um produto na lista
 // (já implementada com inserção em ordem alfabética)
-void inserir_produto_lista(Lista *L, char *nome_produto, int *erro) {
+void inserir_produto_lista(Lista *L, char *nome_produto, int *erro)
+{
     No_Lista *novo = (No_Lista *)malloc(sizeof(No_Lista)); // Aloca memória para um novo Nó
-    if (novo == NULL) {
+    if (novo == NULL)
+    {
         *erro = 1;
         return; // Caso a alocação falhe, retorna e o erro é atualizado
     }
 
     // Aloca memória para o nome do produto
     novo->produto = (char *)malloc((strlen(nome_produto) + 1) * sizeof(char));
-    if (novo->produto == NULL) {
+    if (novo->produto == NULL)
+    {
         free(novo->produto);
         free(novo);
         *erro = 1;
@@ -51,7 +53,7 @@ void inserir_produto_lista(Lista *L, char *nome_produto, int *erro) {
     strcpy(novo->produto, nome_produto);
 
     inicializar_fila(&novo->usuarios); // Inicializa a fila de usuários
-    inicializar_pilha(&novo->lances); // Inicializa a pilha de lances
+    inicializar_pilha(&novo->lances);  // Inicializa a pilha de lances
 
     novo->prox = NULL; // Atualiza o campo 'prox' do novo nó para nulo, até encontrar a posição correta
 
@@ -64,37 +66,44 @@ void inserir_produto_lista(Lista *L, char *nome_produto, int *erro) {
     // e enquanto o produto a ser inserido for lexicograficamente maior, percorre a lista.
     // Quando a condição for quebrada, 'aux' apontará para o elemento que ficará à frente do novo produto,
     // e 'ant' apontará para o anterior do novo produto
-    while (aux != NULL && strcmp(aux->produto, nome_produto) < 0) {
+    while (aux != NULL && strcmp(aux->produto, nome_produto) < 0)
+    {
         ant = aux;
         aux = aux->prox;
     }
 
     // Verifica se o produto já existe
-    if (aux != NULL && strcmp(aux->produto, nome_produto) == 0) {
+    if (aux != NULL && strcmp(aux->produto, nome_produto) == 0)
+    {
         *erro = 1;
         free(novo->produto);
         free(novo);
         return;
     }
-    if (ant == NULL) { // Se for o primeiro da lista
+    if (ant == NULL)
+    { // Se for o primeiro da lista
         novo->prox = L->ini;
         L->ini = novo;
-    } else { // Se não for
+    }
+    else
+    { // Se não for
         ant->prox = novo;
         novo->prox = aux;
     }
 
-    if (aux == NULL) { // Verifica se o novo produto será o último elemento da lista
+    if (aux == NULL)
+    { // Verifica se o novo produto será o último elemento da lista
         L->fim = novo;
     }
     *erro = 0; // Atualiza o erro
 }
 
-
 // Função que procura um produto específico e retorna um ponteiro para ele
-No_Lista *procurar_produto(Lista *L, char *nome_produto, int *erro) {
-    if (lista_vazia(L)) {
-        *erro = 1;   
+No_Lista *procurar_produto(Lista *L, char *nome_produto, int *erro)
+{
+    if (lista_vazia(L))
+    {
+        *erro = 1;
         return NULL; // Caso a lista esteja vazia, retorna NULL e o erro é atualizado
     }
 
@@ -102,12 +111,14 @@ No_Lista *procurar_produto(Lista *L, char *nome_produto, int *erro) {
     No_Lista *aux = L->ini;
 
     // Enquanto houver lista para percorrer
-    while (aux != NULL) { 
+    while (aux != NULL)
+    {
         // Caso entre no 'if', o produto foi encontrado
-        if (strcmp(aux->produto, nome_produto) == 0) {
+        if (strcmp(aux->produto, nome_produto) == 0)
+        {
             *erro = 0;
-            return aux; 
-        } 
+            return aux;
+        }
         aux = aux->prox;
     }
 
@@ -115,24 +126,26 @@ No_Lista *procurar_produto(Lista *L, char *nome_produto, int *erro) {
     return NULL; // Se o produto não foi encontrado, retorna NULL e o erro é atualizado
 }
 
-
 // Função que verifica se um produto esta na lista
 // (Verificação de erro desnecessária)
-int esta_na_lista(Lista *L, char *nome_produto, int *erro) {
-    if (procurar_produto(L, nome_produto, erro) != NULL) 
-        return 1;    
+int esta_na_lista(Lista *L, char *nome_produto, int *erro)
+{
+    if (procurar_produto(L, nome_produto, erro) != NULL)
+        return 1;
     return 0;
 }
 
-
 // Função que remove um produto da lista (simplesmente apaga um nó)
-void remover_da_lista(Lista *L, char *nome_produto, int *erro) {
-    if (lista_vazia(L)) {
+void remover_da_lista(Lista *L, char *nome_produto, int *erro)
+{
+    if (lista_vazia(L))
+    {
         *erro = 1; // Caso a lista esteja vazia, retorna e o erro é atualizado
         return;
     }
 
-    if(!esta_na_lista(L, nome_produto, erro)) {
+    if (!esta_na_lista(L, nome_produto, erro))
+    {
         *erro = 1;
         return; // Caso o produto não esteja na lista, retorna e o erro é atualizado
     }
@@ -145,84 +158,152 @@ void remover_da_lista(Lista *L, char *nome_produto, int *erro) {
     forem idênticos, percorre a lista.
     Quando a condição for quebrada, 'aux' apontará para o produto a ser removido,
     e 'ant' apontará para o produto anterior */
-    while (aux != NULL && strcmp(aux->produto, nome_produto) != 0) {
+    while (aux != NULL && strcmp(aux->produto, nome_produto) != 0)
+    {
         ant = aux;
         aux = aux->prox;
     }
 
-    if (ant == NULL) { 
+    if (ant == NULL)
+    {
         L->ini = aux->prox; // Se o produto a ser removido for o primeiro da lista
-    } else { 
+    }
+    else
+    {
         ant->prox = aux->prox; // Se não for
     }
 
-    if (aux == L->fim) { 
+    if (aux == L->fim)
+    {
         L->fim = ant; // Se o produto a ser removido for o último da lista
     }
 
     // Se a fila não estiver vazia, é excluída
-    if (!fila_vazia(&aux->usuarios)) {
+    if (!fila_vazia(&aux->usuarios))
+    {
         excluir_fila(&aux->usuarios, erro);
-        if (*erro) 
+        if (*erro)
             *erro = 2;
         return;
     }
 
     // Se a pilha não estiver vazia, é excluída
-    if (!pilha_vazia(&aux->lances)) {
+    if (!pilha_vazia(&aux->lances))
+    {
         excluir_pilha(&aux->lances, erro);
         if (*erro)
-            *erro = 3; 
+            *erro = 3;
         return;
     }
 
     free(aux->produto); // Libera o nome
-    free(aux); // Libera o nó
-    *erro = 0;         
+    free(aux);          // Libera o nó
+    *erro = 0;
 }
 
-void imprimir_lista_fila_pilha(Lista *L, int *erro) { //FUNÇÃO INACABADA 
-    No_Lista *aux = L->ini;
-    char *nome_temp;
-    int contador;
-    while(aux != NULL) {
-        printf("%s\n", aux->produto);
-        No_Lista *temp = aux;
-        contador = 1;
-        Pilha pilha_temp = aux->lances;
-        Fila fila_temp = aux->usuarios;
-        float valor1 = desempilhar(&pilha_temp, erro);
-        float valor2 = desempilhar(&pilha_temp, erro);
-        if(valor1 == valor2) {
-            while(valor1 == valor2) {
-                valor1 = desempilhar(&pilha_temp, erro);
-                contador++;
-            }
-        }
-        if(contador > 1) {
-            printf("%d lances de R$%.2f: ", contador, pilha_temp.topo->valor);
-            for(int i = 0; i < contador; i++) {
-                nome_temp = remover_da_fila(&fila_temp, erro);
-                if(i < contador-1)
-                    printf("%s, ", nome_temp);
-                else   
-                    printf("%s\n", nome_temp);
-            }
-        }
-        else {
-            while(!fila_vazia(&fila_temp)) {
-                nome_temp = remover_da_fila(&fila_temp, erro);
-                printf("1 lance de R$%.2f: %s", valor1, nome_temp);
-            }
-        }
-        aux = aux->prox;
+void imprimir_lista_fila_pilha(Lista *L, int *erro)
+{
+    if (lista_vazia(L))
+    {
+        *erro = 1; // Lista vazia ou não inicializada
+        return;
     }
+
+    No_Lista *aux = L->ini;
+    int contador;
+
+    while (aux != NULL)
+    {
+        printf("%s\n", aux->produto); // Imprime o nome do produto
+
+        // Cria e inicializa uma cópia da fila de usuários
+        Fila fila_copia;
+        inicializar_fila(&fila_copia);
+        copiar_fila(&aux->usuarios, &fila_copia, erro);
+        if (*erro != 0)
+        {
+            return; // Retorna se houver erro ao copiar a fila
+        }
+
+        fila_copia = inverter_fila(&fila_copia, erro);
+
+        // Cria e inicializa uma cópia da pilha de lances
+        Pilha pilha_copia;
+        inicializar_pilha(&pilha_copia);
+        copiar_pilha(&aux->lances, &pilha_copia, erro);
+        if (*erro != 0)
+        {
+            return; // Retorna se houver erro ao copiar a pilha
+        }
+
+        float valor_anterior = 0, valor_atual = 0;
+
+        // Desempilha o primeiro lance da cópia da pilha
+        valor_anterior = desempilhar(&pilha_copia, erro);
+        if (*erro != 0)
+        {
+            return; // Retorna se houver erro
+        }
+
+        char *nome_anterior = remover_da_fila(&fila_copia, erro), *nome_atual;
+        if (*erro != 0)
+            return; // Retorna se houver erro ao remover da fila
+
+        while (!pilha_vazia(&pilha_copia) && !fila_vazia(&fila_copia))
+        {
+            nome_atual = remover_da_fila(&fila_copia, erro);
+            valor_atual = desempilhar(&pilha_copia, erro);
+            if (*erro != 0)
+                return; // Retorna se houver erro ao desempilhar
+
+            contador = 1; // Reseta o contador de lances consecutivos
+
+            // Verifica se há lances consecutivos iguais
+            while (valor_anterior == valor_atual)
+            {
+                contador++;
+                valor_atual = desempilhar(&pilha_copia, erro);
+                if (*erro != 0)
+                {
+                    break; // Interrompe se houver erro
+                }
+            }
+
+            // Imprime os lances
+            if (contador > 1)
+            {
+                printf("%d lances de R$%.2f: ", contador, valor_anterior);
+                for (int i = 0; i < contador; i++)
+                {
+                    if (i < contador - 1)
+                        printf("%s, ", nome_atual);
+                    else
+                        printf("%s\n", nome_atual);
+                    nome_atual = remover_da_fila(&fila_copia, erro);
+                    if (*erro != 0)
+                        return; // Retorna se houver erro ao remover da fila
+                }
+            }
+            else
+            {
+                printf("1 lance de R$%.2f: %s\n", valor_anterior, nome_anterior);
+            }
+
+            // Atualiza valor_anterior para a próxima comparação
+            valor_anterior = valor_atual;
+            nome_anterior = nome_atual;
+        }
+        aux = aux->prox; // Avança para o próximo produto na lista
+    }
+    *erro = 0; // Finaliza sem erro
 }
 
 // Função que imprime todos os produtos da lista
-void imprimir_produtos(Lista *L, int *erro) {
-    if (lista_vazia(L)) {
-        *erro = 1; 
+void imprimir_produtos(Lista *L, int *erro)
+{
+    if (lista_vazia(L))
+    {
+        *erro = 1;
         return; // Caso a lista esteja vazia, retorna e o erro é atualizado
     }
 
@@ -231,7 +312,8 @@ void imprimir_produtos(Lista *L, int *erro) {
 
     // Enquanto houver lista para percorrer, imprime o nome do produto
     // e avança para o próximo
-    while (aux != NULL) {
+    while (aux != NULL)
+    {
         printf("%s\n", aux->produto);
         aux = aux->prox;
     }
@@ -240,8 +322,10 @@ void imprimir_produtos(Lista *L, int *erro) {
 }
 
 // Função para apagar todos os nós da lista
-void excluir_lista(Lista *L, int *erro) {
-    if (lista_vazia(L)) {
+void excluir_lista(Lista *L, int *erro)
+{
+    if (lista_vazia(L))
+    {
         *erro = 1;
         return; // Caso a lista esteja vazia, atualiza o erro e retorna
     }
@@ -251,30 +335,35 @@ void excluir_lista(Lista *L, int *erro) {
     No_Lista *temp = NULL;
 
     // Percorre a lista e libera cada nó
-    while (aux != NULL) {
-        temp = aux; // Guarda o nó atual para liberar
+    while (aux != NULL)
+    {
+        temp = aux;      // Guarda o nó atual para liberar
         aux = aux->prox; // Avança para o próximo nó
 
         // Se a fila não estiver vazia, é excluída
-        if (!fila_vazia(&temp->usuarios)) {
+        if (!fila_vazia(&temp->usuarios))
+        {
             excluir_fila(&temp->usuarios, erro);
-            if (*erro) {
+            if (*erro)
+            {
                 *erro = 2;
-                return; 
+                return;
             }
         }
 
         // Se a pilha não estiver vazia, é excluída
-        if (!pilha_vazia(&temp->lances)) {
+        if (!pilha_vazia(&temp->lances))
+        {
             excluir_pilha(&temp->lances, erro);
-            if (*erro) {
+            if (*erro)
+            {
                 *erro = 3;
-                return; 
+                return;
             }
         }
 
         free(temp->produto); // Libera o produto
-        free(temp); // Libera o nó atual
+        free(temp);          // Libera o nó atual
     }
 
     // Após liberar tudo, ajusta os ponteiros
@@ -283,24 +372,26 @@ void excluir_lista(Lista *L, int *erro) {
     *erro = 0;
 }
 
-
-void inserir_lance(Lista *L, char *nome_produto, float valor, char *nome_usuario, int *erro){
+void inserir_lance(Lista *L, char *nome_produto, float valor, char *nome_usuario, int *erro)
+{
     // Procurando o produto a dar lance
     No_Lista *aux = procurar_produto(L, nome_produto, erro);
-    if(*erro || aux == NULL)
+    if (*erro || aux == NULL)
         return;
 
     inserir_na_fila(&aux->usuarios, nome_usuario, erro);
     empilhar(&aux->lances, valor, erro);
-    if(*erro)
+    if (*erro)
         return;
 
     *erro = 0;
 }
 
-char* buscar_produto_especifico(Lista *L, int indice, int *erro){
-    if (lista_vazia(L)) {
-        *erro = 1; 
+char *buscar_produto_especifico(Lista *L, int indice, int *erro)
+{
+    if (lista_vazia(L))
+    {
+        *erro = 1;
         return NULL; // Caso a lista esteja vazia, retorna e o erro é atualizado
     }
 
@@ -309,8 +400,10 @@ char* buscar_produto_especifico(Lista *L, int indice, int *erro){
     int i = 0;
     // Enquanto houver lista para percorrer, imprime o nome do produto
     // e avança para o próximo
-    while (aux != NULL) {
-        if(i == indice){
+    while (aux != NULL)
+    {
+        if (i == indice)
+        {
             return aux->produto;
         }
         i++;
@@ -321,22 +414,27 @@ char* buscar_produto_especifico(Lista *L, int indice, int *erro){
     return NULL;
 }
 
-char* buscar_usuario_ganhador(Lista *L, int indice, int *erro) {
-    if (lista_vazia(L)) {
+char *buscar_usuario_ganhador(Lista *L, int indice, int *erro)
+{
+    if (lista_vazia(L))
+    {
         *erro = 1;
-        return NULL;  // Se a lista de produtos estiver vazia
+        return NULL; // Se a lista de produtos estiver vazia
     }
 
     No_Lista *produto_atual = L->ini;
     int i = 0;
 
     // Percorre a lista até encontrar o produto de índice 'indice'
-    while (produto_atual != NULL) {
-        if (i == indice) {
+    while (produto_atual != NULL)
+    {
+        if (i == indice)
+        {
             // Encontrou o produto, agora busca o ganhador
 
-            if (fila_vazia(&produto_atual->usuarios)) {
-                *erro = 1;  // Nenhum usuário na fila, sem lances
+            if (fila_vazia(&produto_atual->usuarios))
+            {
+                *erro = 1; // Nenhum usuário na fila, sem lances
                 return NULL;
             }
             // Obtemos a fila invertida, sem alterar a original
@@ -344,19 +442,21 @@ char* buscar_usuario_ganhador(Lista *L, int indice, int *erro) {
 
             Fila *fila_usuarios = &fila_invertida;
             No_Fila *no_usuario = fila_usuarios->ini;
-            No_Pilha *no_lance = produto_atual->lances.topo;  // Pegamos o lance mais recente do topo da pilha
+            No_Pilha *no_lance = produto_atual->lances.topo; // Pegamos o lance mais recente do topo da pilha
 
-            No_Fila *ganhador = no_usuario;  // Inicialmente assume o primeiro usuário como ganhador
-            float maior_lance = no_lance->valor;  // O lance mais alto começa sendo o primeiro
+            No_Fila *ganhador = no_usuario;      // Inicialmente assume o primeiro usuário como ganhador
+            float maior_lance = no_lance->valor; // O lance mais alto começa sendo o primeiro
 
             // Percorrer a fila de usuários e pilha de lances simultaneamente
-            while (no_usuario != NULL && no_lance != NULL) {
-                if (no_lance->valor == maior_lance) {
-                    ganhador = no_usuario;  // Atualiza o ganhador
+            while (no_usuario != NULL && no_lance != NULL)
+            {
+                if (no_lance->valor == maior_lance)
+                {
+                    ganhador = no_usuario; // Atualiza o ganhador
                 }
 
                 no_usuario = no_usuario->prox;
-                no_lance = no_lance->prox;  // Avança para o próximo lance
+                no_lance = no_lance->prox; // Avança para o próximo lance
             }
 
             // Retorna o nome do ganhador
@@ -364,18 +464,20 @@ char* buscar_usuario_ganhador(Lista *L, int indice, int *erro) {
             return ganhador->usuario;
         }
 
-        produto_atual = produto_atual->prox;  // Avança para o próximo produto
+        produto_atual = produto_atual->prox; // Avança para o próximo produto
         i++;
     }
 
-    *erro = 1;  // Produto não encontrado
+    *erro = 1; // Produto não encontrado
     return NULL;
 }
 
-float buscar_maior_lance(Lista *lista_de_produtos, int indice, int *erro) {
+float buscar_maior_lance(Lista *lista_de_produtos, int indice, int *erro)
+{
     // Verifica se a lista está vazia
-    if (lista_vazia(lista_de_produtos)) {
-        *erro = 1;  // Erro: Lista vazia
+    if (lista_vazia(lista_de_produtos))
+    {
+        *erro = 1; // Erro: Lista vazia
         return 0.0;
     }
 
@@ -383,20 +485,23 @@ float buscar_maior_lance(Lista *lista_de_produtos, int indice, int *erro) {
     int i = 0;
 
     // Percorre a lista até encontrar o produto correspondente ao índice
-    while (produto_atual != NULL && i < indice) {
+    while (produto_atual != NULL && i < indice)
+    {
         produto_atual = produto_atual->prox;
         i++;
     }
 
     // Verifica se o produto foi encontrado
-    if (produto_atual == NULL || i != indice) {
-        *erro = 1;  // Erro: Produto não encontrado
+    if (produto_atual == NULL || i != indice)
+    {
+        *erro = 1; // Erro: Produto não encontrado
         return 0.0;
     }
 
     // Verifica se a pilha de lances está vazia
-    if (pilha_vazia(&produto_atual->lances)) {
-        *erro = 3;  // Erro: Não há lances para este produto
+    if (pilha_vazia(&produto_atual->lances))
+    {
+        *erro = 3; // Erro: Não há lances para este produto
         return 0.0;
     }
 
@@ -404,31 +509,39 @@ float buscar_maior_lance(Lista *lista_de_produtos, int indice, int *erro) {
     return produto_atual->lances.topo->valor;
 }
 
-int numero_de_produtos(Lista *L, int *erro) {
-    //verificando se a lista está vazia
-    if(lista_vazia(L)){
+int numero_de_produtos(Lista *L, int *erro)
+{
+    // verificando se a lista está vazia
+    if (lista_vazia(L))
+    {
         *erro = 1;
         return 0;
     }
-    else{
-    int i = 0;
-    No_Lista *aux = L->ini;
-    while(aux != NULL){
-        i++;
-        aux = aux->prox;
-    }
-    return i;
+    else
+    {
+        int i = 0;
+        No_Lista *aux = L->ini;
+        while (aux != NULL)
+        {
+            i++;
+            aux = aux->prox;
+        }
+        return i;
     }
 }
-int buscar_indice_produto(Lista *L, char *nome_produto, int *erro){
-    if(lista_vazia(L)){
+int buscar_indice_produto(Lista *L, char *nome_produto, int *erro)
+{
+    if (lista_vazia(L))
+    {
         *erro = 1;
         return -1;
     }
     No_Lista *aux = L->ini;
     int i = 0;
-    while(aux != NULL){
-        if(strcmp(aux->produto, nome_produto) == 0){
+    while (aux != NULL)
+    {
+        if (strcmp(aux->produto, nome_produto) == 0)
+        {
             *erro = 0;
             return i;
         }

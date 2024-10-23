@@ -6,33 +6,36 @@
 #include "pilha.h"
 
 // Função que cadastra um produto na lista
-void cadastrar_produto(Lista *lista_de_produtos, int *erro) {
+void cadastrar_produto(Lista *lista_de_produtos, int *erro)
+{
     char nome_produto[50];
     printf("Entre com o nome do produto: ");
     scanf("%s", nome_produto);
 
-    inserir_produto_lista(lista_de_produtos, nome_produto, erro); 
+    inserir_produto_lista(lista_de_produtos, nome_produto, erro);
 
-    if (*erro) 
+    if (*erro)
         return; // caso haja algum erro, retorna
 
     printf("Produto cadastrado com sucesso!\n");
     return;
 }
 
-//funcao_listar_produtos_lances  ***Tem que ser chamada junto com a funcao listar lances
-void listar_produtos_lances(Lista *lista_de_produtos, int *erro) {
+// funcao_listar_produtos_lances  ***Tem que ser chamada junto com a funcao listar lances
+void listar_produtos_lances(Lista *lista_de_produtos, int *erro)
+{
     imprimir_lista_fila_pilha(lista_de_produtos, erro);
-    
-    if(*erro)
+
+    if (*erro)
         return;
 
-    printf("Listagem completa!");
+    printf("Listagem completa!\n");
     return;
 }
 
 // funcao dar lance !!!!!!!!!!!!!!!!Função não testada
-void dar_lance(Lista *lista_de_produtos, int *erro) {
+void dar_lance(Lista *lista_de_produtos, int *erro)
+{
     char nome_usuario[50], nome_produto[50];
     float valor;
 
@@ -42,11 +45,13 @@ void dar_lance(Lista *lista_de_produtos, int *erro) {
     scanf("%f", &valor);
     printf("\nEntre com o nome do produto: ");
     scanf("%s", nome_produto);
-    if(!esta_na_lista(lista_de_produtos, nome_produto, erro)){
+    if (!esta_na_lista(lista_de_produtos, nome_produto, erro))
+    {
         printf("Produto não encontrado\n");
         return;
     }
-    else if(valor < buscar_maior_lance(lista_de_produtos, buscar_indice_produto(lista_de_produtos, nome_produto, erro), erro)){
+    else if (valor < buscar_maior_lance(lista_de_produtos, buscar_indice_produto(lista_de_produtos, nome_produto, erro), erro))
+    {
         printf("Lance menor que o maior lance dado\n");
         return;
     }
@@ -62,7 +67,8 @@ void listar_outros_produtos()
 */
 
 // funcao remover produto
-void remover_produto(Lista *lista_de_produtos, int *erro) {
+void remover_produto(Lista *lista_de_produtos, int *erro)
+{
 
     // Recebendo o nome do produto
     char nome_produto[50];
@@ -70,7 +76,7 @@ void remover_produto(Lista *lista_de_produtos, int *erro) {
     scanf("%s", nome_produto);
 
     remover_da_lista(lista_de_produtos, nome_produto, erro);
-    if (*erro) 
+    if (*erro)
         return; // Caso haja algum erro, retorna
 
     printf("Produto removido com sucesso!\n");
@@ -78,13 +84,15 @@ void remover_produto(Lista *lista_de_produtos, int *erro) {
 }
 
 // funcao encerrar leilao
-void encerrar_leilao(Lista *produtos, int *erro) {
+void encerrar_leilao(Lista *produtos, int *erro)
+{
     int i = 0;
     while (i < numero_de_produtos(produtos, erro))
     {
         printf("%s", buscar_produto_especifico(produtos, i, erro));
         printf(": ");
-        if(buscar_usuario_ganhador(produtos, i, erro) == NULL){
+        if (buscar_usuario_ganhador(produtos, i, erro) == NULL)
+        {
             printf("Nenhum lance foi dado para esse produto\n");
             i++;
             continue;
@@ -98,7 +106,8 @@ void encerrar_leilao(Lista *produtos, int *erro) {
     excluir_lista(produtos, erro);
 }
 
-int main() {
+int main()
+{
 
     Lista lista_de_produtos;
     Fila usuarios_geral;
@@ -121,7 +130,8 @@ int main() {
         if (opcao == 1)
         {
             cadastrar_produto(&lista_de_produtos, &erro);
-            switch (erro) {
+            switch (erro)
+            {
             case 1:
                 printf("Erro de alocação de memória\n");
                 break;
@@ -132,7 +142,7 @@ int main() {
         }
         else if (opcao == 2)
         {
-            // listar_produtos();
+            listar_produtos_lances(&lista_de_produtos, &erro);
         }
         else if (opcao == 3)
         {
