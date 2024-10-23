@@ -42,7 +42,14 @@ void dar_lance(Lista *lista_de_produtos, int *erro) {
     scanf("%f", &valor);
     printf("\nEntre com o nome do produto: ");
     scanf("%s", nome_produto);
-
+    if(!esta_na_lista(lista_de_produtos, nome_produto, erro)){
+        printf("Produto não encontrado\n");
+        return;
+    }
+    else if(valor < buscar_maior_lance(lista_de_produtos, buscar_indice_produto(lista_de_produtos, nome_produto, erro), erro)){
+        printf("Lance menor que o maior lance dado\n");
+        return;
+    }
     inserir_lance(lista_de_produtos, nome_produto, valor, nome_usuario, erro);
 
     printf("\nLance dado com sucesso!\n");

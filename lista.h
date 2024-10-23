@@ -33,5 +33,5 @@ char *buscar_produto_especifico(Lista *, int, int *);
 char *buscar_usuario_ganhador(Lista *, int, int *);
 float buscar_maior_lance(Lista *, int, int *);
 int numero_de_produtos(Lista *, int *);
-
+int buscar_indice_produto(Lista *, char *, int *);
 #endif

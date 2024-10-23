@@ -420,3 +420,21 @@ int numero_de_produtos(Lista *L, int *erro) {
     return i;
     }
 }
+int buscar_indice_produto(Lista *L, char *nome_produto, int *erro){
+    if(lista_vazia(L)){
+        *erro = 1;
+        return -1;
+    }
+    No_Lista *aux = L->ini;
+    int i = 0;
+    while(aux != NULL){
+        if(strcmp(aux->produto, nome_produto) == 0){
+            *erro = 0;
+            return i;
+        }
+        i++;
+        aux = aux->prox;
+    }
+    *erro = 1;
+    return -1;
+}
