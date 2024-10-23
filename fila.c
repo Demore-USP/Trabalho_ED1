@@ -140,6 +140,11 @@ Fila inverter_fila(Fila *F, int *erro) {
             printf("Erro de alocação de memória.\n");
             exit(1);  // Se falhar a alocação, terminamos o programa
         }
+        novo_no->usuario = (char *)malloc((strlen(atual->usuario) + 1) * sizeof(char));
+        if (novo_no->usuario == NULL) {
+        printf("Erro de alocação de memória.\n");
+        exit(1);
+        }
 
         // Copia os dados do nó atual da fila original para o novo nó
         strcpy(novo_no->usuario, atual->usuario);

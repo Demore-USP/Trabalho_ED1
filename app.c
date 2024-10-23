@@ -72,6 +72,17 @@ void remover_produto(Lista *lista_de_produtos, int *erro) {
 
 // funcao encerrar leilao
 void encerrar_leilao(Lista *produtos, int *erro) {
+    int i = 0;
+    while (i < numero_de_produtos(produtos, erro))
+    {
+        printf("%s", buscar_produto_especifico(produtos, i, erro));
+        printf(": ");
+        printf("%s ", buscar_usuario_ganhador(produtos, i, erro));
+        printf("comprou por R$");
+        printf("%.2f\n", buscar_maior_lance(produtos, i, erro));
+        i++;
+    }
+    printf("Leilão encerrado!\n");
     excluir_lista(produtos, erro);
 }
 

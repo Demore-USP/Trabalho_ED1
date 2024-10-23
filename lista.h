@@ -29,5 +29,9 @@ void imprimir_lista_fila_pilha(Lista *, int *);
 void imprimir_produtos(Lista *, int *);
 void excluir_lista(Lista *, int *);
 void inserir_lance(Lista *, char *, float, char *, int *);
+char *buscar_produto_especifico(Lista *, int, int *);
+char *buscar_usuario_ganhador(Lista *, int, int *);
+float buscar_maior_lance(Lista *, int, int *);
+int numero_de_produtos(Lista *, int *);
 
 #endif

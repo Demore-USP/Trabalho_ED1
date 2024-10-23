@@ -297,3 +297,126 @@ void inserir_lance(Lista *L, char *nome_produto, float valor, char *nome_usuario
 
     *erro = 0;
 }
+
+char* buscar_produto_especifico(Lista *L, int indice, int *erro){
+    if (lista_vazia(L)) {
+        *erro = 1; 
+        return NULL; // Caso a lista esteja vazia, retorna e o erro é atualizado
+    }
+
+    // Ponteiro auxiliar para não modificar o ponteiro 'ini'
+    No_Lista *aux = L->ini;
+    int i = 0;
+    // Enquanto houver lista para percorrer, imprime o nome do produto
+    // e avança para o próximo
+    while (aux != NULL) {
+        if(i == indice){
+            return aux->produto;
+        }
+        i++;
+        aux = aux->prox;
+    }
+
+    *erro = 1;
+    return NULL;
+}
+
+char* buscar_usuario_ganhador(Lista *L, int indice, int *erro) {
+    if (lista_vazia(L)) {
+        *erro = 1;
+        return NULL;  // Se a lista de produtos estiver vazia
+    }
+
+    No_Lista *produto_atual = L->ini;
+    int i = 0;
+
+    // Percorre a lista até encontrar o produto de índice 'indice'
+    while (produto_atual != NULL) {
+        if (i == indice) {
+            // Encontrou o produto, agora busca o ganhador
+
+            if (fila_vazia(&produto_atual->usuarios)) {
+                *erro = 1;  // Nenhum usuário na fila, sem lances
+                return NULL;
+            }
+            // Obtemos a fila invertida, sem alterar a original
+            Fila fila_invertida = inverter_fila(&produto_atual->usuarios, erro);
+
+            Fila *fila_usuarios = &fila_invertida;
+            No_Fila *no_usuario = fila_usuarios->ini;
+            No_Pilha *no_lance = produto_atual->lances.topo;  // Pegamos o lance mais recente do topo da pilha
+
+            No_Fila *ganhador = no_usuario;  // Inicialmente assume o primeiro usuário como ganhador
+            float maior_lance = no_lance->valor;  // O lance mais alto começa sendo o primeiro
+
+            // Percorrer a fila de usuários e pilha de lances simultaneamente
+            while (no_usuario != NULL && no_lance != NULL) {
+                if (no_lance->valor == maior_lance) {
+                    ganhador = no_usuario;  // Atualiza o ganhador
+                }
+
+                no_usuario = no_usuario->prox;
+                no_lance = no_lance->prox;  // Avança para o próximo lance
+            }
+
+            // Retorna o nome do ganhador
+            *erro = 0;
+            return ganhador->usuario;
+        }
+
+        produto_atual = produto_atual->prox;  // Avança para o próximo produto
+        i++;
+    }
+
+    *erro = 1;  // Produto não encontrado
+    return NULL;
+}
+
+float buscar_maior_lance(Lista *lista_de_produtos, int indice, int *erro) {
+    // Verifica se a lista está vazia
+    if (lista_vazia(lista_de_produtos)) {
+        *erro = 1;  // Erro: Lista vazia
+        return 0.0;
+    }
+
+    No_Lista *produto_atual = lista_de_produtos->ini;
+    int i = 0;
+
+    // Percorre a lista até encontrar o produto correspondente ao índice
+    while (produto_atual != NULL && i < indice) {
+        produto_atual = produto_atual->prox;
+        i++;
+    }
+
+    // Verifica se o produto foi encontrado
+    if (produto_atual == NULL || i != indice) {
+        *erro = 1;  // Erro: Produto não encontrado
+        return 0.0;
+    }
+
+    // Verifica se a pilha de lances está vazia
+    if (pilha_vazia(&produto_atual->lances)) {
+        *erro = 3;  // Erro: Não há lances para este produto
+        return 0.0;
+    }
+
+    // Retorna o valor do maior lance (valor no topo da pilha)
+    return produto_atual->lances.topo->valor;
+}
+
+int numero_de_produtos(Lista *L, int *erro) {
+    //verificando se a lista está vazia
+    if(lista_vazia(L)){
+        *erro = 1;
+        return 0;
+    }
+    else{
+    int i = 0;
+    No_Lista *aux = L->ini;
+    while(aux != NULL){
+        i++;
+        aux = aux->prox;
+    }
+    return i;
+    }
+}
