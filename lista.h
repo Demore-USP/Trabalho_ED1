@@ -35,4 +35,9 @@ char *buscar_usuario_ganhador(Lista *, int, int *);
 float buscar_maior_lance(Lista *, int, int *);
 int numero_de_produtos(Lista *, int *);
 int buscar_indice_produto(Lista *, char *, int *);
+void encontrar_recomendacoes(Lista *, int *, Lista_simples *);
+int numero_usuarios(Lista_simples *, int *);
+char *retornar_nome(Lista_simples *, int, int *);
+char *recomendar(Lista *, int, char *, int *);
+
 #endif

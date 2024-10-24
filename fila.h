@@ -25,5 +25,6 @@ void imprimir_fila(Fila *, int *);
 void imprimir_primeiro_fila(Fila *, int *);
 Fila inverter_fila(Fila *, int *);
 void excluir_fila(Fila *, int *);
+int esta_na_fila(Fila *, char *, int *);
 
 #endif

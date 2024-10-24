@@ -14,9 +14,9 @@ typedef struct Lista_simples {
 } Lista_simples;
 
 void inicializar_Lista_simples(Lista_simples *);
-int Lista_simples_vazia(Lista_simples *);
-void inserir_na_Lista_simples(Lista_simples *, char *, int *);
-void remover_da_Lista_simples(Lista_simples *, char *, int *);
+int lista_simples_vazia(Lista_simples *);
+void inserir_lista_simples(Lista_simples *, char *, int *);
+void excluir_lista_simples(Lista_simples *, int *);
 
 
 #endif

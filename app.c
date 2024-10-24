@@ -4,6 +4,7 @@
 #include "lista.h"
 #include "fila.h"
 #include "pilha.h"
+#include "lista_simples.c"
 
 // Função que cadastra um produto na lista
 void cadastrar_produto(Lista *lista_de_produtos, int *erro)
@@ -148,10 +149,23 @@ void dar_lance(Lista *lista_de_produtos, int *erro)
     return;
 }
 
-/*
+
 //funcao listar outros produtos
-void listar_outros_produtos()
-*/
+void listar_outros_produtos(Lista *lista_de_produtos, int *erro, Lista_simples *usuarios_recomendar){
+
+    encontrar_recomendacoes(lista_de_produtos, erro, usuarios_recomendar);
+
+    int qtd_nomes = numero_usuarios(usuarios_recomendar, erro);
+    int qtd_produtos = numero_de_produtos(lista_de_produtos, erro);
+
+    for(int i=0; i < qtd_nomes; i++) {
+        char *nome_atual = retornar_nome(usuarios_recomendar, i, erro);
+        printf("Para %s: nao gostaria de dar um lance por:\n", nome_atual);
+            for(int j=0; j < qtd_produtos; j++){
+                printf("- %s\n", recomendar(lista_de_produtos, j, nome_atual, erro)); 
+            }
+    }
+}
 
 // funcao remover produto
 void remover_produto(Lista *lista_de_produtos, int *erro)
@@ -197,11 +211,12 @@ int main()
 {
 
     Lista lista_de_produtos;
-    Fila usuarios_geral;
+    Lista_simples usuarios_recomendar;
     int erro = 0;
     int opcao = 0;
 
     inicializar_lista(&lista_de_produtos);
+    inicializar_lista_simples(&usuarios_recomendar);
 
     while (opcao != 6)
     {
@@ -243,13 +258,12 @@ int main()
                 printf("Produto não encontrado\n");
                 break;
             }
-        }
-        else if (opcao == 4)
-        {
-            // listar_outros_produtos();
-        }
-        else if (opcao == 5)
-        {
+        } else if (opcao == 4) {
+
+            listar_outros_produtos(&lista_de_produtos, &erro, &usuarios_recomendar);
+
+
+        } else if (opcao == 5) {
 
             remover_produto(&lista_de_produtos, &erro);
             switch (erro)
