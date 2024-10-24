@@ -1,0 +1,32 @@
+# Variáveis
+CC = gcc                  # Compilador
+CFLAGS = -O3 -Wall -g    # Opções de compilação: otimização O3, avisos e depuração
+EXEC = programa           # Nome do executável
+OBJ = app.o fila.o pilha.o lista.o lista_simples.o  # Arquivos objeto
+
+# Regra padrão
+all: $(EXEC)
+
+# Regra para criar o executável
+$(EXEC): $(OBJ)
+	$(CC) $(OBJ) -o $(EXEC)
+
+# Regras para compilar os arquivos objeto
+app.o: app.c fila.h pilha.h lista.h lista_simples.h
+	$(CC) $(CFLAGS) -c app.c
+
+fila.o: fila.c fila.h
+	$(CC) $(CFLAGS) -c fila.c
+
+pilha.o: pilha.c pilha.h
+	$(CC) $(CFLAGS) -c pilha.c
+
+lista_simples.o: lista_simples.c lista_simples.h
+	$(CC) $(CFLAGS) -c lista_simples.c
+
+lista.o: lista.c lista.h pilha.h fila.h lista_simples.h
+	$(CC) $(CFLAGS) -c lista.c
+
+# Limpeza dos arquivos gerados
+clean:
+	rm -f $(OBJ) $(EXEC)

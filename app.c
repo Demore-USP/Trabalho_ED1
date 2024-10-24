@@ -4,7 +4,7 @@
 #include "lista.h"
 #include "fila.h"
 #include "pilha.h"
-#include "lista_simples.c"
+#include "lista_simples.h"
 
 // Função que cadastra um produto na lista
 void cadastrar_produto(Lista *lista_de_produtos, int *erro)
