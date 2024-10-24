@@ -1,6 +1,6 @@
 /*
-Caso haja algum erro em qualquer função, a função retorna 1. 
-Desse modo, cabe ao usuário do TAD verificar o motivo do erro, 
+Caso haja algum erro em qualquer função, a função retorna 1.
+Desse modo, cabe ao usuário do TAD verificar o motivo do erro,
 de acordo a função chamada.
 */
 
@@ -10,24 +10,25 @@ de acordo a função chamada.
 #include <stdlib.h>
 #include <string.h>
 
-
 // Função que inicializa a Pilha
-void inicializar_pilha(Pilha *P) {
+void inicializar_pilha(Pilha *P)
+{
     P->topo = NULL;
 }
 
-
 // Função que verifica se a pilha está vazia
 // (retorna 1 se está vazia ou 0 se não está)
-int pilha_vazia(Pilha *P) {
+int pilha_vazia(Pilha *P)
+{
     return (P->topo == NULL);
 }
 
-
 // Função que insere um lance na pilha
-void empilhar(Pilha *P, float valor, int *erro) {
+void empilhar(Pilha *P, float valor, int *erro)
+{
     No_Pilha *novo = (No_Pilha *)malloc(sizeof(No_Pilha)); // Aloca memória para um novo Nó
-    if (novo == NULL) {
+    if (novo == NULL)
+    {
         *erro = 1;
         return; // Caso a alocação falhe, retorna e o erro é atualizado
     }
@@ -40,12 +41,13 @@ void empilhar(Pilha *P, float valor, int *erro) {
     *erro = 0;
 }
 
-
 // Função que remove o último lance da pilha (simplesmente apaga o nó)
-float desempilhar(Pilha *P, int *erro) {
-    if (pilha_vazia(P)) {
+float desempilhar(Pilha *P, int *erro)
+{
+    if (pilha_vazia(P))
+    {
         *erro = 1;
-        return; // Caso a pilha esteja vazia, retorna e o erro é atualizado
+        return 0; // Caso a pilha esteja vazia, retorna e o erro é atualizado
     }
     float valor = P->topo->valor;
     No_Pilha *temp = P->topo;
@@ -55,9 +57,42 @@ float desempilhar(Pilha *P, int *erro) {
     return valor;
 }
 
+void copiar_pilha(Pilha *origem, Pilha *destino, int *erro)
+{
+    if (pilha_vazia(origem))
+    {
+        *erro = 1;
+        return;
+    }
 
-void imprimir_pilha(Pilha *P, int *erro) {
-    if (pilha_vazia(P)) {
+    Pilha pilha_aux;
+    inicializar_pilha(&pilha_aux); // Inicializa uma pilha auxiliar
+
+    No_Pilha *no_pilha = origem->topo;
+
+    // Desempilha da origem e empilha na pilha auxiliar
+    while (no_pilha != NULL)
+    {
+        empilhar(&pilha_aux, no_pilha->valor, erro);
+        if (*erro != 0)
+            return;
+        no_pilha = no_pilha->prox;
+    }
+
+    // Desempilha da auxiliar para a pilha destino (mantém a ordem original)
+    while (!pilha_vazia(&pilha_aux))
+    {
+        float valor = desempilhar(&pilha_aux, erro);
+        empilhar(destino, valor, erro);
+        if (*erro != 0)
+            return;
+    }
+}
+
+void imprimir_pilha(Pilha *P, int *erro)
+{
+    if (pilha_vazia(P))
+    {
         *erro = 1;
         return; // Caso a pilha esteja vazia, retorna e o erro é atualizado
     }
@@ -67,17 +102,19 @@ void imprimir_pilha(Pilha *P, int *erro) {
 
     // Enquanto houver pilha para percorrer, imprime o lance
     // e avança para o próximo
-    while (aux != NULL) {
+    while (aux != NULL)
+    {
         printf("%f\n", aux->valor);
         aux = aux->prox;
     }
     *erro = 0;
 }
 
-
 // Função que imprime apenas o topo da pilha (apenas o lance mais alto)
-void imprimir_topo(Pilha *P, int *erro) {
-    if (pilha_vazia(P)) {
+void imprimir_topo(Pilha *P, int *erro)
+{
+    if (pilha_vazia(P))
+    {
         *erro = 1;
         return; // Caso a pilha esteja vazia, retorna e o erro é atualizado
     }
@@ -87,10 +124,11 @@ void imprimir_topo(Pilha *P, int *erro) {
     *erro = 0;
 }
 
-
 // Função que apaga todos os nós da pilha
-void excluir_pilha(Pilha *P, int *erro) {
-    if (pilha_vazia(P)) {
+void excluir_pilha(Pilha *P, int *erro)
+{
+    if (pilha_vazia(P))
+    {
         *erro = 1;
         return; // Caso a pilha esteja vazia, retorna e o erro é atualizado
     }
@@ -100,8 +138,9 @@ void excluir_pilha(Pilha *P, int *erro) {
     No_Pilha *temp = NULL;
 
     // Percorre a pilha e libera cada nó
-    while (atual != NULL) {
-        temp = atual; // Guarda o nó atual para liberar
+    while (atual != NULL)
+    {
+        temp = atual;        // Guarda o nó atual para liberar
         atual = atual->prox; // Avança para o próximo nó
         free(temp);
     }

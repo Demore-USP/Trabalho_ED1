@@ -1,6 +1,6 @@
 /*
-Caso haja algum erro em qualquer função, a função retorna 1. 
-Desse modo, cabe ao usuário do TAD verificar o motivo do erro, 
+Caso haja algum erro em qualquer função, a função retorna 1.
+Desse modo, cabe ao usuário do TAD verificar o motivo do erro,
 de acordo a função chamada.
 */
 
@@ -10,64 +10,71 @@ de acordo a função chamada.
 #include <stdlib.h>
 #include <string.h>
 
-
 // Função que inicializa a fila
-void inicializar_fila(Fila *F) {
+void inicializar_fila(Fila *F)
+{
     F->ini = NULL;
     F->fim = NULL;
 }
 
-
 // Função que verifica se a fila está vazia
 // (retorna 1 se estiver vazia ou 0 se não estiver)
-int fila_vazia(Fila *F) {
+int fila_vazia(Fila *F)
+{
     return (F->ini == NULL);
 }
 
-
 // Função que insere um usuario na fila
-void inserir_na_fila(Fila *F, char *nome_usuario, int *erro) {
+void inserir_na_fila(Fila *F, char *nome_usuario, int *erro)
+{
     No_Fila *novo = (No_Fila *)malloc(sizeof(No_Fila)); // Aloca memória para um novo Nó
-    if (novo == NULL) {
+    if (novo == NULL)
+    {
         *erro = 1;
         return; // Caso a alocação falhe, retorna e o erro é atualizado
     }
 
     // Aloca memória para o nome do usuário
     novo->usuario = (char *)malloc((strlen(nome_usuario) + 1) * sizeof(char));
-    if (novo->usuario == NULL) {
+    if (novo->usuario == NULL)
+    {
         free(novo);
         *erro = 1;
         return; // Caso a alocação falhe, libera o nó, retorna e o erro é atualizado
     }
 
     // Copia o nome do usuário da variável temporária para a definitiva (campo da fila)
-    strcpy(novo->usuario, nome_usuario); 
+    strcpy(novo->usuario, nome_usuario);
 
     novo->prox = NULL; // Sempre aponta para NULL, pois sempre é inserido no fim
 
-    if (fila_vazia(F)) {                  
+    if (fila_vazia(F))
+    {
         F->ini = novo; // Se a fila estiver vazia, novo usuario é o primeiro
-    } else {          
-        // Ajusta o ponteiro do "antigo" último elemento para apontar para o "novo" último elemento              
-        F->fim->prox = novo; 
+    }
+    else
+    {
+        // Ajusta o ponteiro do "antigo" último elemento para apontar para o "novo" último elemento
+        F->fim->prox = novo;
     }
     F->fim = novo; // O novo nó sempre será inserido no fim (lógica FIFO)
     *erro = 0;
 }
 
-
 // Função que remove o pirmeiro usuário da fila e devolve seu nome
-char *remover_da_fila(Fila *F, int *erro) {
+char *remover_da_fila(Fila *F, int *erro)
+{
     // Verifica se a fila está vazia
-    if (fila_vazia(F)) {
+    if (fila_vazia(F))
+    {
         *erro = 1;
         return NULL; // Se a fila estiver vazia, retorna NULL e atualiza o erro
     }
 
     // Aloca espaço para armazenar o nome do usuário removido
     char *nome_aux = (char *)malloc(strlen(F->ini->usuario) + 1);
-    if (nome_aux == NULL) {
+    if (nome_aux == NULL)
+    {
         *erro = 2; // Erro de alocação de memória
         return NULL;
     }
@@ -80,23 +87,44 @@ char *remover_da_fila(Fila *F, int *erro) {
     F->ini = aux->prox;
 
     // Se a fila ficou vazia após a remoção, atualiza o ponteiro 'fim'
-    if (F->ini == NULL) {
+    if (F->ini == NULL)
+    {
         F->fim = NULL;
     }
 
     // Libera a memória alocada para o nome e o nó
     free(aux->usuario); // Libera o nome do usuário no nó removido
-    free(aux); // Libera o nó
+    free(aux);          // Libera o nó
 
-    *erro = 0; // Nenhum erro
+    *erro = 0;       // Nenhum erro
     return nome_aux; // Retorna o nome do usuário removido
 }
 
+void copiar_fila(Fila *origem, Fila *destino, int *erro)
+{
+    if (fila_vazia(origem))
+    {
+        *erro = 1;
+        return;
+    }
 
+    No_Fila *no_fila = origem->ini;
+
+    // Percorre a fila original e copia os elementos para a fila destino
+    while (no_fila != NULL)
+    {
+        inserir_na_fila(destino, no_fila->usuario, erro);
+        if (*erro != 0)
+            return;
+        no_fila = no_fila->prox;
+    }
+}
 
 // Função que imprime todos os elementos da fila
-void imprimir_fila(Fila *F, int *erro) {
-    if (fila_vazia(F)) {
+void imprimir_fila(Fila *F, int *erro)
+{
+    if (fila_vazia(F))
+    {
         *erro = 1;
         return; // Se a fila estiver vazia, retorna e o erro é atualizado
     }
@@ -106,15 +134,18 @@ void imprimir_fila(Fila *F, int *erro) {
 
     // Enquanto houver fila para percorrer, imprime o nome do usuário
     // e avança para o próximo
-    while (aux != NULL) {
+    while (aux != NULL)
+    {
         printf("%s\n", aux->usuario);
         aux = aux->prox;
     }
     *erro = 0;
 }
 
-void imprimir_primeiro_fila(Fila *F, int *erro) {
-    if (fila_vazia(F)) {
+void imprimir_primeiro_fila(Fila *F, int *erro)
+{
+    if (fila_vazia(F))
+    {
         *erro = 1;
         return; // Se a fila estiver vazia, retorna e o erro é atualizado
     }
@@ -122,33 +153,38 @@ void imprimir_primeiro_fila(Fila *F, int *erro) {
     *erro = 0;
 }
 
-Fila inverter_fila(Fila *F, int *erro) {
+Fila inverter_fila(Fila *F, int *erro)
+{
     Fila fila_invertida;
-    inicializar_fila(&fila_invertida);  // Inicializamos a nova fila invertida
+    inicializar_fila(&fila_invertida); // Inicializamos a nova fila invertida
 
-    if (fila_vazia(F)) {
-        return fila_invertida;  // Se a fila original estiver vazia, retornamos uma fila vazia
+    if (fila_vazia(F))
+    {
+        return fila_invertida; // Se a fila original estiver vazia, retornamos uma fila vazia
     }
 
     No_Fila *atual = F->ini;
 
     // Percorremos a fila original do início ao fim
-    while (atual != NULL) {
+    while (atual != NULL)
+    {
         // Criamos um novo nó com o mesmo conteúdo do nó atual da fila original
-        No_Fila *novo_no = (No_Fila *) malloc(sizeof(No_Fila));
-        if (novo_no == NULL) {
+        No_Fila *novo_no = (No_Fila *)malloc(sizeof(No_Fila));
+        if (novo_no == NULL)
+        {
             printf("Erro de alocação de memória.\n");
-            exit(1);  // Se falhar a alocação, terminamos o programa
+            exit(1); // Se falhar a alocação, terminamos o programa
         }
         novo_no->usuario = (char *)malloc((strlen(atual->usuario) + 1) * sizeof(char));
-        if (novo_no->usuario == NULL) {
-        printf("Erro de alocação de memória.\n");
-        exit(1);
+        if (novo_no->usuario == NULL)
+        {
+            printf("Erro de alocação de memória.\n");
+            exit(1);
         }
 
         // Copia os dados do nó atual da fila original para o novo nó
         strcpy(novo_no->usuario, atual->usuario);
-        novo_no->prox = fila_invertida.ini;  // Inserimos o novo nó no início da fila invertida
+        novo_no->prox = fila_invertida.ini; // Inserimos o novo nó no início da fila invertida
         fila_invertida.ini = novo_no;
 
         // Avançamos para o próximo nó da fila original
@@ -156,14 +192,16 @@ Fila inverter_fila(Fila *F, int *erro) {
     }
 
     // Após o loop, ajustamos o ponteiro para o fim da fila invertida
-    fila_invertida.fim = F->ini;  // O fim da fila invertida será o primeiro nó da fila original
+    fila_invertida.fim = F->ini; // O fim da fila invertida será o primeiro nó da fila original
 
-    return fila_invertida;  // Retornamos a fila invertida
+    return fila_invertida; // Retornamos a fila invertida
 }
 
 // Função para apagar todos os nós da fila
-void excluir_fila(Fila *F, int *erro) {
-    if (fila_vazia(F)) {
+void excluir_fila(Fila *F, int *erro)
+{
+    if (fila_vazia(F))
+    {
         *erro = 1;
         return; // Se a fila estiver vazia, retorna e o erro é atualizado
     }
@@ -173,8 +211,9 @@ void excluir_fila(Fila *F, int *erro) {
     No_Fila *temp = NULL;
 
     // Percorre a fila e libera cada nó
-    while (aux != NULL) {
-        temp = aux; // Guarda o nó atual para liberar
+    while (aux != NULL)
+    {
+        temp = aux;      // Guarda o nó atual para liberar
         aux = aux->prox; // Avança para o próximo nó
         free(temp->usuario);
         free(temp);

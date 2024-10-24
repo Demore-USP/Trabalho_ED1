@@ -24,11 +24,98 @@ void cadastrar_produto(Lista *lista_de_produtos, int *erro)
 // funcao_listar_produtos_lances  ***Tem que ser chamada junto com a funcao listar lances
 void listar_produtos_lances(Lista *lista_de_produtos, int *erro)
 {
-    imprimir_info_lista(lista_de_produtos, erro);
-
-    if (*erro)
+    if (lista_vazia(lista_de_produtos))
+    {
+        *erro = 1; // Lista vazia ou não inicializada
         return;
+    }
 
+    char *nome_produto;
+
+    for (int i = 0; i < numero_de_produtos(lista_de_produtos, erro); i++)
+    {
+        nome_produto = buscar_produto_especifico(lista_de_produtos, i, erro); // coleta o nome do produto por seu "índice na lista"
+        printf("%s\n", nome_produto);                                         // Imprime o nome do produto
+
+        // Cria e inicializa uma cópia da fila de usuários
+        Fila fila_copia;
+        inicializar_fila(&fila_copia);
+        copiar_fila(&(procurar_produto(lista_de_produtos, nome_produto, erro))->usuarios, &fila_copia, erro); // copia a fila de usuarios do produto especificado
+        if (*erro != 0)
+        {
+            return; // Retorna se houver erro ao copiar a fila
+        }
+
+        fila_copia = inverter_fila(&fila_copia, erro); // inverte a fila para poder opera-la de acordo com a necessidade da impressão
+
+        // Cria e inicializa uma cópia da pilha de lances
+        Pilha pilha_copia;
+        inicializar_pilha(&pilha_copia);
+        copiar_pilha(&(procurar_produto(lista_de_produtos, nome_produto, erro))->lances, &pilha_copia, erro); // copia a pilha de lances do produto especificado
+        if (*erro != 0)
+        {
+            return; // Retorna se houver erro ao copiar a pilha
+        }
+
+        float valor_anterior, valor_atual; // declara um valor anterior e atual para comparação de lances iguais
+        char *nome_usuario;                // nome a ser impresso de cada lance
+        int contador;                      // contador de lances iguais
+        while (!fila_vazia(&fila_copia))
+        { // enquanto a fila não esta vazia remove o primeiro da fila e o topo da pilha
+            nome_usuario = remover_da_fila(&fila_copia, erro);
+            valor_anterior = desempilhar(&pilha_copia, erro);
+            if (*erro != 0)
+            {
+                return; // Retorna se houver erro ao copiar a fila
+            }
+            if (!pilha_vazia(&pilha_copia)) // se a pilha ainda não estiver vazia remove o proximo dela para comparar com o anterior
+                valor_atual = desempilhar(&pilha_copia, erro);
+            if (*erro != 0)
+                return; // Retorna se houver erro ao desempilhar
+
+            contador = 1; // Reseta o contador de lances consecutivos
+
+            // Verifica se há lances consecutivos iguais
+            while (valor_anterior == valor_atual && !pilha_vazia(&pilha_copia))
+            {
+                contador++; // conta quantos lances são iguais ao compara-los
+                valor_atual = desempilhar(&pilha_copia, erro);
+                if (*erro != 0)
+                {
+                    return; // Interrompe se houver erro
+                }
+            }
+
+            // Imprime lances iguais no caso em que existem
+            if (contador > 1)
+            {
+                printf("%d lances de R$%.2f: ", contador, valor_anterior);
+                for (int i = 0; i < contador; i++)
+                {
+                    if (i < contador - 1)
+                    { // esse if then else esta aqui apenas para imprimir em uma formatação específica com virgulas entre os nomes dos usuários
+                        printf("%s, ", nome_usuario);
+                        nome_usuario = remover_da_fila(&fila_copia, erro); // passa para o próximo da fila que tambem deu um lance igual
+                    }
+                    else
+                    {
+                        printf("%s\n", nome_usuario);
+                        empilhar(&pilha_copia, valor_atual, erro);
+                    }
+                    if (*erro != 0)
+                        return; // Retorna se houver erro ao remover da fila
+                }
+            }
+            else // se não houverem iguais devolve o lance comparado com o anterior para a pilha para evitar de desempilhar mais do que há de elementos na pilha
+            {
+                empilhar(&pilha_copia, valor_atual, erro);
+                printf("1 lance de R$%.2f: %s\n", valor_anterior, nome_usuario);
+            }
+            valor_anterior = 0;
+            valor_atual = 0;
+            // Atualiza valor_anterior e atual para a próxima comparação
+        }
+    }
     printf("Listagem completa!\n");
     return;
 }
