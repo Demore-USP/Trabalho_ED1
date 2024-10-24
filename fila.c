@@ -223,17 +223,21 @@ void excluir_fila(Fila *F, int *erro)
     *erro = 0;
 }
 
-int esta_na_fila(Fila *F, char *nome, int *erro) {
-    if (fila_vazia(F)) {
+int esta_na_fila(Fila *F, char *nome, int *erro)
+{
+    if (fila_vazia(F))
+    {
         *erro = 1;
-        return; // Se a fila estiver vazia, retorna e o erro é atualizado
+        return 0; // Se a fila estiver vazia, retorna e o erro é atualizado
     }
 
     // Ponteiro auxiliar para não modificar 'ini'
     No_Fila *aux = F->ini;
 
-    while(aux != NULL) {
-        if(strcmp(aux->usuario, nome) == 0) {
+    while (aux != NULL)
+    {
+        if (strcmp(aux->usuario, nome) == 0)
+        {
             *erro = 0;
             return 1;
         }

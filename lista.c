@@ -8,7 +8,7 @@ de acordo a função chamada.
 
 // Includes padrão
 #include "lista.h"
-#include "lista_simples.c"
+#include "lista_simples.h"
 #include "fila.h"
 #include "pilha.h"
 #include <stdio.h>
@@ -202,100 +202,6 @@ void remover_da_lista(Lista *L, char *nome_produto, int *erro)
     *erro = 0;
 }
 
-<<<<<<< Updated upstream
-=======
-void imprimir_info_lista(Lista *L, int *erro)
-{
-    if (lista_vazia(L))
-    {
-        *erro = 1; // Lista vazia ou não inicializada
-        return;
-    }
-
-    No_Lista *aux = L->ini;
-
-    while (aux != NULL)
-    {
-        printf("%s\n", aux->produto); // Imprime o nome do produto
-
-        // Cria e inicializa uma cópia da fila de usuários
-        Fila fila_copia;
-        inicializar_fila(&fila_copia);
-        /*copiar_fila(&aux->usuarios, &fila_copia, erro);
-        if (*erro != 0)
-        {
-            return; // Retorna se houver erro ao copiar a fila
-        }*/
-
-        fila_copia = inverter_fila(&fila_copia, erro); //inverte a fila para poder opera-la de acordo com a necessidade da impressão
-
-        // Cria e inicializa uma cópia da pilha de lances
-        Pilha pilha_copia;
-        inicializar_pilha(&pilha_copia);
-        copiar_pilha(&aux->lances, &pilha_copia, erro);
-        if (*erro != 0)
-        {
-            return; // Retorna se houver erro ao copiar a pilha
-        }
-
-        float valor_anterior, valor_atual; //declara um valor anterior e atual para comparação de lances iguais
-        char *nome; //nome a ser impresso de cada lance
-        int contador; //contador de lances iguais
-        while(!fila_vazia(&fila_copia)) { //enquanto a fila não esta vazia remove o primeiro da fila e o topo da pilha
-            nome = remover_da_fila(&fila_copia, erro);
-            valor_anterior = desempilhar(&pilha_copia, erro);
-            if (*erro != 0)
-            {
-                return; // Retorna se houver erro ao copiar a fila
-            }
-            if(!pilha_vazia(&pilha_copia)) //se a pilha ainda não estiver vazia remove o proximo dela para comparar com o anterior
-                valor_atual = desempilhar(&pilha_copia, erro);
-            if (*erro != 0)
-                return; // Retorna se houver erro ao desempilhar
-
-            contador = 1; // Reseta o contador de lances consecutivos
-
-                // Verifica se há lances consecutivos iguais
-            while (valor_anterior == valor_atual && !pilha_vazia(&pilha_copia))
-            {
-                contador++; //conta quantos lances são iguais ao compara-los
-                valor_atual = desempilhar(&pilha_copia, erro);
-                if (*erro != 0)
-                {
-                    return; // Interrompe se houver erro
-                }
-            }
-
-                // Imprime lances iguais no caso em que existem
-            if (contador > 1)
-            {
-                printf("%d lances de R$%.2f: ", contador, valor_anterior);
-                for (int i = 0; i < contador; i++)
-                {
-                    if (i < contador - 1) //esse if then else esta aqui qapenas para imprimir em uma formatação específica com virgulas entre os nomes dos usuários
-                        printf("%s, ", nome); 
-                    else 
-                        printf("%s\n", nome);
-                        nome = remover_da_fila(&fila_copia, erro); //passa para o próximo da fila que tambem deu um lance igual
-                        if (*erro != 0)
-                            return; // Retorna se houver erro ao remover da fila
-                }   
-            }
-            else //se não houverem iguais devolve o lance comparado com o anterior para a pilha para evitar de desempilhar mais do que há de elementos na pilha
-            {
-                empilhar(&pilha_copia, valor_atual, erro);
-                printf("1 lance de R$%.2f: %s\n", valor_anterior, nome);
-            }
-            valor_anterior = 0;
-            valor_atual = 0;
-                // Atualiza valor_anterior e atual para a próxima comparação
-            }
-        aux = aux->prox; // Avança para o próximo produto na lista
-    }
-    *erro = 0; // Finaliza sem erro
-}
-
->>>>>>> Stashed changes
 // Função que imprime todos os produtos da lista
 void imprimir_produtos(Lista *L, int *erro)
 {
@@ -507,7 +413,8 @@ float buscar_maior_lance(Lista *lista_de_produtos, int indice, int *erro)
     return produto_atual->lances.topo->valor;
 }
 
-int numero_de_produtos(Lista *L, int *erro) {
+int numero_de_produtos(Lista *L, int *erro)
+{
     // verificando se a lista está vazia
     if (lista_vazia(L))
     {
@@ -549,24 +456,29 @@ int buscar_indice_produto(Lista *L, char *nome_produto, int *erro)
     return -1;
 }
 
-void encontrar_recomendacoes(Lista *L, int *erro, Lista_simples *usuarios_recomendar) {
-    if (lista_vazia(L)) {
+void encontrar_recomendacoes(Lista *L, int *erro, Lista_simples *usuarios_recomendar)
+{
+    if (lista_vazia(L))
+    {
         *erro = 1;
-        return;  // Se a lista estiver vazia, não há nada a fazer
+        return; // Se a lista estiver vazia, não há nada a fazer
     }
 
     // Novo ponteiro para não modificar o 'ini'
     No_Lista *aux = L->ini;
 
-    while (aux != NULL) {
+    while (aux != NULL)
+    {
         // Encontrar o ganhador atual para o produto
         int erro_ganhador = 0;
         int indice = buscar_indice_produto(L, aux->produto, erro);
-        char *usuario_ganhador = buscar_usuario_ganhador(&aux->usuarios, &indice, &erro_ganhador);
-        
-        if (erro_ganhador == 0) {
+        char *usuario_ganhador = buscar_usuario_ganhador(L, indice, &erro_ganhador);
+
+        if (erro_ganhador == 0)
+        {
             No_Fila *usuario_atual = aux->usuarios.ini;
-            while (usuario_atual != NULL) {
+            while (usuario_atual != NULL)
+            {
                 // Verifica se o usuário atual não é o ganhador
                 if (strcmp(usuario_atual->usuario, usuario_ganhador) != 0)
                     inserir_lista_simples(usuarios_recomendar, usuario_atual->usuario, erro);
@@ -575,15 +487,20 @@ void encontrar_recomendacoes(Lista *L, int *erro, Lista_simples *usuarios_recome
     }
 }
 
-int numero_usuarios(Lista_simples *usuarios_recomendar, int *erro) {
+int numero_usuarios(Lista_simples *usuarios_recomendar, int *erro)
+{
     // verificando se a lista está vazia
-    if (lista_simples_vazia(usuarios_recomendar)) {
+    if (lista_simples_vazia(usuarios_recomendar))
+    {
         *erro = 1;
         return 0;
-    } else {
+    }
+    else
+    {
         int i = 0;
         No *aux = usuarios_recomendar->ini;
-        while (aux != NULL) {
+        while (aux != NULL)
+        {
             i++;
             aux = aux->prox;
         }
@@ -591,8 +508,10 @@ int numero_usuarios(Lista_simples *usuarios_recomendar, int *erro) {
     }
 }
 
-char *retornar_nome(Lista_simples *L, int indice, int *erro) {
-    if (lista_simples_vazia(L)) {
+char *retornar_nome(Lista_simples *L, int indice, int *erro)
+{
+    if (lista_simples_vazia(L))
+    {
         *erro = 1;
         return NULL; // Caso a lista esteja vazia, retorna e o erro é atualizado
     }
@@ -601,8 +520,10 @@ char *retornar_nome(Lista_simples *L, int indice, int *erro) {
     No *aux = L->ini;
     int i = 0;
 
-    while (aux != NULL) {
-        if (i == indice) {
+    while (aux != NULL)
+    {
+        if (i == indice)
+        {
             return aux->nome;
         }
         i++;
@@ -612,8 +533,10 @@ char *retornar_nome(Lista_simples *L, int indice, int *erro) {
     return NULL;
 }
 
-char *recomendar(Lista *L, int indice, char *nome, int *erro) {
-    if (lista_vazia(L)) {
+char *recomendar(Lista *L, int indice, char *nome, int *erro)
+{
+    if (lista_vazia(L))
+    {
         *erro = 1;
         return NULL; // Caso a lista esteja vazia, retorna e o erro é atualizado
     }
@@ -624,9 +547,12 @@ char *recomendar(Lista *L, int indice, char *nome, int *erro) {
     int i = 0;
     int flag = 0;
 
-    while (aux != NULL) {
-        if (i == indice) {
-            if(!esta_na_fila(&aux->usuarios, nome, erro)) {
+    while (aux != NULL)
+    {
+        if (i == indice)
+        {
+            if (!esta_na_fila(&aux->usuarios, nome, erro))
+            {
                 *erro = 0;
                 return aux->produto;
             }
@@ -636,4 +562,26 @@ char *recomendar(Lista *L, int indice, char *nome, int *erro) {
     }
     *erro = 1;
     return NULL;
+}
+
+Pilha *pilha_especifica(Lista *L, char *nome_produto, int *erro)
+{
+    if (!esta_na_lista(L, nome_produto, erro))
+    {
+        *erro = 1;
+        return NULL;
+    }
+    No_Lista *aux = procurar_produto(L, nome_produto, erro);
+    return &aux->lances;
+}
+
+Fila *fila_especifica(Lista *L, char *nome_produto, int *erro)
+{
+    if (!esta_na_lista(L, nome_produto, erro))
+    {
+        *erro = 1;
+        return NULL;
+    }
+    No_Lista *aux = procurar_produto(L, nome_produto, erro);
+    return &aux->usuarios;
 }

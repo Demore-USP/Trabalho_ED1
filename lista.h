@@ -3,6 +3,7 @@
 
 #include "pilha.h"
 #include "fila.h"
+#include "lista_simples.h"
 
 // Criando a struct que armazena os produtos
 // junto com os usuários e seus respectivos lances
@@ -39,5 +40,7 @@ void encontrar_recomendacoes(Lista *, int *, Lista_simples *);
 int numero_usuarios(Lista_simples *, int *);
 char *retornar_nome(Lista_simples *, int, int *);
 char *recomendar(Lista *, int, char *, int *);
+Pilha *pilha_especifica(Lista *, char *, int *);
+Fila *fila_especifica(Lista *, char *, int *);
 
 #endif

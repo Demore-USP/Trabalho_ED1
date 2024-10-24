@@ -41,7 +41,7 @@ void listar_produtos_lances(Lista *lista_de_produtos, int *erro)
         // Cria e inicializa uma cópia da fila de usuários
         Fila fila_copia;
         inicializar_fila(&fila_copia);
-        copiar_fila(&(procurar_produto(lista_de_produtos, nome_produto, erro))->usuarios, &fila_copia, erro); // copia a fila de usuarios do produto especificado
+        copiar_fila(fila_especifica(lista_de_produtos, nome_produto, erro), &fila_copia, erro); // copia a fila de usuarios do produto especificado
         if (*erro != 0)
         {
             return; // Retorna se houver erro ao copiar a fila
@@ -52,7 +52,7 @@ void listar_produtos_lances(Lista *lista_de_produtos, int *erro)
         // Cria e inicializa uma cópia da pilha de lances
         Pilha pilha_copia;
         inicializar_pilha(&pilha_copia);
-        copiar_pilha(&(procurar_produto(lista_de_produtos, nome_produto, erro))->lances, &pilha_copia, erro); // copia a pilha de lances do produto especificado
+        copiar_pilha(pilha_especifica(lista_de_produtos, nome_produto, erro), &pilha_copia, erro); // copia a pilha de lances do produto especificado
         if (*erro != 0)
         {
             return; // Retorna se houver erro ao copiar a pilha
@@ -149,21 +149,23 @@ void dar_lance(Lista *lista_de_produtos, int *erro)
     return;
 }
 
-
-//funcao listar outros produtos
-void listar_outros_produtos(Lista *lista_de_produtos, int *erro, Lista_simples *usuarios_recomendar){
+// funcao listar outros produtos
+void listar_outros_produtos(Lista *lista_de_produtos, int *erro, Lista_simples *usuarios_recomendar)
+{
 
     encontrar_recomendacoes(lista_de_produtos, erro, usuarios_recomendar);
 
     int qtd_nomes = numero_usuarios(usuarios_recomendar, erro);
     int qtd_produtos = numero_de_produtos(lista_de_produtos, erro);
 
-    for(int i=0; i < qtd_nomes; i++) {
+    for (int i = 0; i < qtd_nomes; i++)
+    {
         char *nome_atual = retornar_nome(usuarios_recomendar, i, erro);
         printf("Para %s: nao gostaria de dar um lance por:\n", nome_atual);
-            for(int j=0; j < qtd_produtos; j++){
-                printf("- %s\n", recomendar(lista_de_produtos, j, nome_atual, erro)); 
-            }
+        for (int j = 0; j < qtd_produtos; j++)
+        {
+            printf("- %s\n", recomendar(lista_de_produtos, j, nome_atual, erro));
+        }
     }
 }
 
@@ -258,12 +260,14 @@ int main()
                 printf("Produto não encontrado\n");
                 break;
             }
-        } else if (opcao == 4) {
+        }
+        else if (opcao == 4)
+        {
 
             listar_outros_produtos(&lista_de_produtos, &erro, &usuarios_recomendar);
-
-
-        } else if (opcao == 5) {
+        }
+        else if (opcao == 5)
+        {
 
             remover_produto(&lista_de_produtos, &erro);
             switch (erro)
