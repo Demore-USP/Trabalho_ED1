@@ -4,7 +4,7 @@
 #include "lista.h"
 #include "fila.h"
 #include "pilha.h"
-#include "lista_simples.c"
+#include "lista_simples.h"
 
 // Função que cadastra um produto na lista
 void cadastrar_produto(Lista *lista_de_produtos, int *erro)
@@ -152,22 +152,54 @@ void dar_lance(Lista *lista_de_produtos, int *erro)
 // funcao listar outros produtos
 void listar_outros_produtos(Lista *lista_de_produtos, int *erro, Lista_simples *usuarios_recomendar)
 {
-
+    // Chamada da função para encontrar recomendações
     encontrar_recomendacoes(lista_de_produtos, erro, usuarios_recomendar);
 
-    int qtd_nomes = numero_usuarios(usuarios_recomendar, erro);
-    int qtd_produtos = numero_de_produtos(lista_de_produtos, erro);
+    // Verificar se houve erro na função encontrar_recomendacoes
+    if (*erro) {
+        printf("Erro ao encontrar recomendações.\n");
+        return;  // Interrompe a execução caso ocorra um erro
+    }
 
+    // Obtém a quantidade de usuários para recomendar
+    int qtd_nomes = numero_usuarios(usuarios_recomendar, erro);
+    if (*erro) {
+        printf("Erro ao obter o número de usuários para recomendação.\n");
+        return;
+    }
+
+    // Obtém a quantidade de produtos
+    int qtd_produtos = numero_de_produtos(lista_de_produtos, erro);
+    if (*erro) {
+        printf("Erro ao obter o número de produtos.\n");
+        return;
+    }
+
+    // Loop pelos usuários recomendados
     for (int i = 0; i < qtd_nomes; i++)
     {
+        // Retorna o nome atual da lista de usuários recomendados
         char *nome_atual = retornar_nome(usuarios_recomendar, i, erro);
+        if (*erro) {
+            printf("Erro ao retornar o nome do usuário na posição %d.\n", i);
+            continue;  // Pula para o próximo usuário caso ocorra erro
+        }
+
+        // Exibe a recomendação inicial para o usuário
         printf("Para %s: nao gostaria de dar um lance por:\n", nome_atual);
+
+        // Loop pelos produtos e tenta recomendar para o usuário atual
         for (int j = 0; j < qtd_produtos; j++)
         {
-            printf("- %s\n", recomendar(lista_de_produtos, j, nome_atual, erro));
+            char *produto_recomendado = recomendar(lista_de_produtos, j, nome_atual, erro);
+
+             if (produto_recomendado != NULL && produto_recomendado[0] != '\0') {
+                printf("- %s\n", produto_recomendado);
+            }
         }
     }
 }
+
 
 // funcao remover produto
 void remover_produto(Lista *lista_de_produtos, int *erro)

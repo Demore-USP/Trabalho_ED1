@@ -482,8 +482,10 @@ void encontrar_recomendacoes(Lista *L, int *erro, Lista_simples *usuarios_recome
                 // Verifica se o usuário atual não é o ganhador
                 if (strcmp(usuario_atual->usuario, usuario_ganhador) != 0)
                     inserir_lista_simples(usuarios_recomendar, usuario_atual->usuario, erro);
+                usuario_atual = usuario_atual->prox;
             }
         }
+        aux = aux->prox;
     }
 }
 
@@ -551,7 +553,7 @@ char *recomendar(Lista *L, int indice, char *nome, int *erro)
     {
         if (i == indice)
         {
-            if (!esta_na_fila(&aux->usuarios, nome, erro))
+            if (esta_na_fila(&aux->usuarios, nome, erro)==0)
             {
                 *erro = 0;
                 return aux->produto;

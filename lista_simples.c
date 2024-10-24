@@ -65,7 +65,6 @@ void inserir_lista_simples(Lista_simples *L, char *nome, int *erro)
     if (aux != NULL && strcmp(aux->nome, nome) == 0)
     {
         *erro = 1;
-        free(novo->nome);
         free(novo);
         return;
     }
