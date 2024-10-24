@@ -24,7 +24,7 @@ void cadastrar_produto(Lista *lista_de_produtos, int *erro)
 // funcao_listar_produtos_lances  ***Tem que ser chamada junto com a funcao listar lances
 void listar_produtos_lances(Lista *lista_de_produtos, int *erro)
 {
-    imprimir_lista_fila_pilha(lista_de_produtos, erro);
+    imprimir_info_lista(lista_de_produtos, erro);
 
     if (*erro)
         return;

@@ -27,7 +27,7 @@ void inserir_produto_lista(Lista *, char *, int *);
 No_Lista *procurar_produto(Lista *, char *, int *);
 int esta_na_lista(Lista *, char *, int *);
 void remover_da_lista(Lista *, char *, int *);
-void imprimir_lista_fila_pilha(Lista *, int *);
+void imprimir_info_lista(Lista *, int *);
 void imprimir_produtos(Lista *, int *);
 void excluir_lista(Lista *, int *);
 void inserir_lance(Lista *, char *, float, char *, int *);
