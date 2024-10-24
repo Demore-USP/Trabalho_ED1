@@ -30,59 +30,87 @@ void listar_produtos_lances(Lista *lista_de_produtos, int *erro)
         *erro = 1; // Lista vazia ou não inicializada
         return;
     }
-
     char *nome_produto;
-
     for (int i = 0; i < numero_de_produtos(lista_de_produtos, erro); i++)
     {
-        nome_produto = buscar_produto_especifico(lista_de_produtos, i, erro); // coleta o nome do produto por seu "índice na lista"
-        printf("%s\n", nome_produto);                                         // Imprime o nome do produto
+        nome_produto = buscar_produto_especifico(lista_de_produtos, i, erro); // Coleta o nome do produto por seu "índice na lista"
+        if (*erro != 0)
+        {
+            return;
+        }
+        printf("%s\n", nome_produto); // Imprime o nome do produto
 
         // Cria e inicializa uma cópia da fila de usuários
         Fila fila_copia;
         inicializar_fila(&fila_copia);
-        copiar_fila(fila_especifica(lista_de_produtos, nome_produto, erro), &fila_copia, erro); // copia a fila de usuarios do produto especificado
+        copiar_fila(fila_especifica(lista_de_produtos, nome_produto, erro), &fila_copia, erro); // Copia a fila de usuarios do produto especificado
         if (*erro != 0)
         {
+            free(nome_produto);
             return; // Retorna se houver erro ao copiar a fila
         }
-
-        fila_copia = inverter_fila(&fila_copia, erro); // inverte a fila para poder opera-la de acordo com a necessidade da impressão
+        fila_copia = inverter_fila(&fila_copia, erro); // Inverte a fila para poder operá-la de acordo com a necessidade da impressão
 
         // Cria e inicializa uma cópia da pilha de lances
         Pilha pilha_copia;
         inicializar_pilha(&pilha_copia);
-        copiar_pilha(pilha_especifica(lista_de_produtos, nome_produto, erro), &pilha_copia, erro); // copia a pilha de lances do produto especificado
+        opiar_pilha(pilha_especifica(lista_de_produtos, nome_produto, erro), &pilha_copia, erro); // Copia a pilha de lances do produto especificado
         if (*erro != 0)
         {
-            return; // Retorna se houver erro ao copiar a pilha
+            free(nome_produto);
+            excluir_fila(&fila_copia, erro); // Limpa a fila antes de retornar
+            return;                          // Retorna se houver erro ao copiar a pilha
         }
 
-        float valor_anterior, valor_atual; // declara um valor anterior e atual para comparação de lances iguais
-        char *nome_usuario;                // nome a ser impresso de cada lance
-        int contador;                      // contador de lances iguais
+        float valor_anterior = 0, valor_atual = 0; // Declara um valor anterior e atual para comparação de lances iguais
+        char *nome_usuario;                        // Nome a ser impresso de cada lance
+        int contador;                              // Contador de lances iguais
+
         while (!fila_vazia(&fila_copia))
-        { // enquanto a fila não esta vazia remove o primeiro da fila e o topo da pilha
+        { // Enquanto a fila não está vazia remove o primeiro da fila e o topo da pilha
             nome_usuario = remover_da_fila(&fila_copia, erro);
+            if (*erro != 0)
+            {
+                free(nome_produto);
+                excluir_fila(&fila_copia, erro);
+                excluir_pilha(&pilha_copia, erro);
+                return; // Retorna se houver erro ao remover da fila
+            }
             valor_anterior = desempilhar(&pilha_copia, erro);
             if (*erro != 0)
             {
-                return; // Retorna se houver erro ao copiar a fila
-            }
-            if (!pilha_vazia(&pilha_copia)) // se a pilha ainda não estiver vazia remove o proximo dela para comparar com o anterior
-                valor_atual = desempilhar(&pilha_copia, erro);
-            if (*erro != 0)
+                free(nome_produto);
+                free(nome_usuario);
+                excluir_fila(&fila_copia, erro);
+                excluir_pilha(&pilha_copia, erro);
                 return; // Retorna se houver erro ao desempilhar
+            }
+            if (!pilha_vazia(&pilha_copia))
+            { // Se a pilha ainda não estiver vazia remove o próximo dela para comparar com o anterior
+                valor_atual = desempilhar(&pilha_copia, erro);
+                if (*erro != 0)
+                {
+                    free(nome_produto);
+                    free(nome_usuario);
+                    excluir_fila(&fila_copia, erro);
+                    excluir_pilha(&pilha_copia, erro);
+                    return; // Retorna se houver erro ao desempilhar
+                }
+            }
 
             contador = 1; // Reseta o contador de lances consecutivos
 
             // Verifica se há lances consecutivos iguais
             while (valor_anterior == valor_atual && !pilha_vazia(&pilha_copia))
             {
-                contador++; // conta quantos lances são iguais ao compara-los
+                contador++; // Conta quantos lances são iguais ao compará-los
                 valor_atual = desempilhar(&pilha_copia, erro);
                 if (*erro != 0)
                 {
+                    free(nome_produto);
+                    free(nome_usuario);
+                    excluir_fila(&fila_copia, erro);
+                    excluir_pilha(&pilha_copia, erro);
                     return; // Interrompe se houver erro
                 }
             }
@@ -94,28 +122,49 @@ void listar_produtos_lances(Lista *lista_de_produtos, int *erro)
                 for (int i = 0; i < contador; i++)
                 {
                     if (i < contador - 1)
-                    { // esse if then else esta aqui apenas para imprimir em uma formatação específica com virgulas entre os nomes dos usuários
+                    { // Esse if/else está aqui apenas para imprimir em uma formatação específica com vírgulas entre os nomes dos usuários
                         printf("%s, ", nome_usuario);
-                        nome_usuario = remover_da_fila(&fila_copia, erro); // passa para o próximo da fila que tambem deu um lance igual
+                        free(nome_usuario);
+                        nome_usuario = remover_da_fila(&fila_copia, erro); // Passa para o próximo da fila que também deu um lance igual
+                        if (*erro != 0)
+                        {
+                            free(nome_produto);
+                            excluir_fila(&fila_copia, erro);
+                            excluir_pilha(&pilha_copia, erro);
+                            return; // Retorna se houver erro ao remover da fila
+                        }
                     }
                     else
                     {
                         printf("%s\n", nome_usuario);
+                        free(nome_usuario);
                         empilhar(&pilha_copia, valor_atual, erro);
+                        if (*erro != 0)
+                        {
+                            free(nome_produto);
+                            excluir_fila(&fila_copia, erro);
+                            excluir_pilha(&pilha_copia, erro);
+                            return; // Retorna se houver erro ao empilhar
+                        }
                     }
-                    if (*erro != 0)
-                        return; // Retorna se houver erro ao remover da fila
                 }
             }
-            else // se não houverem iguais devolve o lance comparado com o anterior para a pilha para evitar de desempilhar mais do que há de elementos na pilha
-            {
+            else
+            { // Se não houverem iguais, devolve o lance comparado com o anterior para a pilha para evitar desempilhar mais do que há de elementos na pilha
                 empilhar(&pilha_copia, valor_atual, erro);
+                if (*erro != 0)
+                {
+                    free(nome_produto);
+                    free(nome_usuario);
+                    excluir_fila(&fila_copia, erro);
+                    excluir_pilha(&pilha_copia, erro);
+                    return; // Retorna se houver erro ao empilhar
+                }
                 printf("1 lance de R$%.2f: %s\n", valor_anterior, nome_usuario);
+                free(nome_usuario);
             }
-            valor_anterior = 0;
-            valor_atual = 0;
-            // Atualiza valor_anterior e atual para a próxima comparação
         }
+        free(nome_produto);
     }
     printf("Listagem completa!\n");
     return;
@@ -156,21 +205,24 @@ void listar_outros_produtos(Lista *lista_de_produtos, int *erro, Lista_simples *
     encontrar_recomendacoes(lista_de_produtos, erro, usuarios_recomendar);
 
     // Verificar se houve erro na função encontrar_recomendacoes
-    if (*erro) {
+    if (*erro)
+    {
         printf("Erro ao encontrar recomendações.\n");
-        return;  // Interrompe a execução caso ocorra um erro
+        return; // Interrompe a execução caso ocorra um erro
     }
 
     // Obtém a quantidade de usuários para recomendar
     int qtd_nomes = numero_usuarios(usuarios_recomendar, erro);
-    if (*erro) {
+    if (*erro)
+    {
         printf("Erro ao obter o número de usuários para recomendação.\n");
         return;
     }
 
     // Obtém a quantidade de produtos
     int qtd_produtos = numero_de_produtos(lista_de_produtos, erro);
-    if (*erro) {
+    if (*erro)
+    {
         printf("Erro ao obter o número de produtos.\n");
         return;
     }
@@ -180,9 +232,10 @@ void listar_outros_produtos(Lista *lista_de_produtos, int *erro, Lista_simples *
     {
         // Retorna o nome atual da lista de usuários recomendados
         char *nome_atual = retornar_nome(usuarios_recomendar, i, erro);
-        if (*erro) {
+        if (*erro)
+        {
             printf("Erro ao retornar o nome do usuário na posição %d.\n", i);
-            continue;  // Pula para o próximo usuário caso ocorra erro
+            continue; // Pula para o próximo usuário caso ocorra erro
         }
 
         // Exibe a recomendação inicial para o usuário
@@ -193,13 +246,13 @@ void listar_outros_produtos(Lista *lista_de_produtos, int *erro, Lista_simples *
         {
             char *produto_recomendado = recomendar(lista_de_produtos, j, nome_atual, erro);
 
-             if (produto_recomendado != NULL && produto_recomendado[0] != '\0') {
+            if (produto_recomendado != NULL && produto_recomendado[0] != '\0')
+            {
                 printf("- %s\n", produto_recomendado);
             }
         }
     }
 }
-
 
 // funcao remover produto
 void remover_produto(Lista *lista_de_produtos, int *erro)
@@ -279,6 +332,8 @@ int main()
         else if (opcao == 2)
         {
             listar_produtos_lances(&lista_de_produtos, &erro);
+            if (erro)
+                printf("salve salve");
         }
         else if (opcao == 3)
         {
