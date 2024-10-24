@@ -47,12 +47,12 @@ void dar_lance(Lista *lista_de_produtos, int *erro)
     scanf("%s", nome_produto);
     if (!esta_na_lista(lista_de_produtos, nome_produto, erro))
     {
-        printf("Produto não encontrado\n");
+        printf("Produto não encontrado no leilão. Escolha um produto existente\n");
         return;
     }
     else if (valor < buscar_maior_lance(lista_de_produtos, buscar_indice_produto(lista_de_produtos, nome_produto, erro), erro))
     {
-        printf("Lance menor que o maior lance dado\n");
+        printf("Seu lance pelo(a) %s não foi aceito. Você precisa dar um lance maior\n", nome_produto);
         return;
     }
     inserir_lance(lista_de_produtos, nome_produto, valor, nome_usuario, erro);
